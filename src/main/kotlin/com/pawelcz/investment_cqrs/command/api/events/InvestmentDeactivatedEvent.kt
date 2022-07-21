@@ -1,6 +1,5 @@
 package com.pawelcz.investment_cqrs.command.api.events
 
-import com.pawelcz.investment_cqrs.core.api.value_objects.InvestmentPeriodInMonths
 import com.pawelcz.investment_cqrs.core.api.value_objects.InvestmentStatus
 import java.time.LocalDate
 

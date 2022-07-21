@@ -3,6 +3,7 @@ package com.pawelcz.investment_cqrs.core.api.services
 import com.pawelcz.investment_cqrs.command.api.commands.CreateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.DeactivateInvestmentCommand
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
+import com.pawelcz.investment_cqrs.core.api.util.MapConverter
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -16,7 +17,7 @@ class InvestmentService(private val commandGateway: CommandGateway) {
             createInvestmentDTO.name,
             createInvestmentDTO.minimumAmount,
             createInvestmentDTO.maximumAmount,
-            createInvestmentDTO.investmentPeriodInMonths,
+            MapConverter.stringToMap(createInvestmentDTO.availableInvestmentPeriods),
             createInvestmentDTO.expirationDate,
             createInvestmentDTO.investmentStatus
         )

@@ -4,7 +4,6 @@ import com.pawelcz.investment_cqrs.command.api.commands.CreateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.DeactivateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.events.InvestmentCreatedEvent
 import com.pawelcz.investment_cqrs.command.api.events.InvestmentDeactivatedEvent
-import com.pawelcz.investment_cqrs.core.api.value_objects.InvestmentPeriodInMonths
 import com.pawelcz.investment_cqrs.core.api.value_objects.InvestmentStatus
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
@@ -21,7 +20,7 @@ class Investment {
     private lateinit var name: String
     private var minimumAmount by Delegates.notNull<Double>()
     private var maximumAmount by Delegates.notNull<Double>()
-    private lateinit var investmentPeriodInMonths: InvestmentPeriodInMonths
+    private lateinit var availableInvestmentPeriods: Map<String, Double>
     private lateinit var expirationDate: LocalDate
     private lateinit var investmentStatus: InvestmentStatus
 
@@ -32,7 +31,7 @@ class Investment {
             createInvestmentCommand.name,
             createInvestmentCommand.minimumAmount,
             createInvestmentCommand.maximumAmount,
-            createInvestmentCommand.investmentPeriodInMonths,
+            createInvestmentCommand.availableInvestmentPeriods,
             createInvestmentCommand.expirationDate,
             createInvestmentCommand.investmentStatus
         )
@@ -45,7 +44,7 @@ class Investment {
         this.name = investmentCreatedEvent.name
         this.minimumAmount = investmentCreatedEvent.minimumAmount
         this.maximumAmount = investmentCreatedEvent.maximumAmount
-        this.investmentPeriodInMonths = investmentCreatedEvent.investmentPeriodInMonths
+        this.availableInvestmentPeriods = investmentCreatedEvent.availableInvestmentPeriods
         this.expirationDate = investmentCreatedEvent.expirationDate
         this.investmentStatus = investmentCreatedEvent.investmentStatus
     }

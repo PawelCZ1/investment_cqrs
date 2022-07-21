@@ -1,6 +1,6 @@
 package com.pawelcz.investment_cqrs.core.api.config
 
-import com.pawelcz.investment_cqrs.command.api.aggregates.Calculation
+//import com.pawelcz.investment_cqrs.command.api.aggregates.Calculation
 import com.pawelcz.investment_cqrs.command.api.aggregates.Investment
 import com.pawelcz.investment_cqrs.command.api.aggregates.Investor
 import com.pawelcz.investment_cqrs.command.api.aggregates.Wallet
@@ -35,13 +35,13 @@ class AxonConfig {
         return EventSourcingRepository.builder(Wallet::class.java)
             .eventStore(eventStore).build()
     }
-
+/*
     @Bean
     fun calculationEventSourcingRepository(eventStore: EventStore?): EventSourcingRepository<Calculation> {
         return EventSourcingRepository.builder(Calculation::class.java)
             .eventStore(eventStore).build()
     }
-
+*/
     @Bean
     fun myQueueMessageSource(messageConverter: AMQPMessageConverter?): SpringAMQPMessageSource? {
         return object : SpringAMQPMessageSource(messageConverter) {

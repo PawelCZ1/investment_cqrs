@@ -2,6 +2,7 @@ package com.pawelcz.investment_cqrs.query.api.event_handlers
 
 import com.pawelcz.investment_cqrs.command.api.events.InvestmentCreatedEvent
 import com.pawelcz.investment_cqrs.command.api.events.InvestmentDeactivatedEvent
+import com.pawelcz.investment_cqrs.core.api.util.MapConverter
 import com.pawelcz.investment_cqrs.query.api.entities.InvestmentEntity
 import com.pawelcz.investment_cqrs.query.api.repositories.InvestmentEntityRepository
 import org.axonframework.eventhandling.EventHandler
@@ -17,7 +18,7 @@ class InvestmentEventHandler(private val investmentEntityRepository: InvestmentE
             investmentCreatedEvent.name,
             investmentCreatedEvent.minimumAmount,
             investmentCreatedEvent.maximumAmount,
-            investmentCreatedEvent.investmentPeriodInMonths,
+            MapConverter.mapToString(investmentCreatedEvent.availableInvestmentPeriods),
             investmentCreatedEvent.expirationDate,
             investmentCreatedEvent.investmentStatus
         )

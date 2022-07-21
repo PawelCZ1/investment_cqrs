@@ -16,6 +16,7 @@ class Calculation {
     private lateinit var calculationId: String
     private var amount by Delegates.notNull<Double>()
     private lateinit var investmentTarget: String
+    private lateinit var periodInMonths: String
     private lateinit var startDate: LocalDate
     private lateinit var endDate: LocalDate
     private lateinit var investmentId: String
@@ -27,8 +28,9 @@ class Calculation {
             registerNewCalculationCommand.calculationId,
             registerNewCalculationCommand.amount,
             registerNewCalculationCommand.investmentTarget,
-            registerNewCalculationCommand.startDate,
-            registerNewCalculationCommand.endDate,
+            registerNewCalculationCommand.periodInMonths,
+            LocalDate.now(),
+            LocalDate.now().plusDays(registerNewCalculationCommand.periodInMonths.toLong() * 30),
             registerNewCalculationCommand.investmentId,
             registerNewCalculationCommand.walletId
         )
@@ -40,6 +42,7 @@ class Calculation {
         this.calculationId = newCalculationRegisteredEvent.calculationId
         this.amount = newCalculationRegisteredEvent.amount
         this.investmentTarget = newCalculationRegisteredEvent.investmentTarget
+        this.periodInMonths = newCalculationRegisteredEvent.periodInMonths
         this.startDate = newCalculationRegisteredEvent.startDate
         this.endDate = newCalculationRegisteredEvent.endDate
         this.investmentId = newCalculationRegisteredEvent.investmentId
