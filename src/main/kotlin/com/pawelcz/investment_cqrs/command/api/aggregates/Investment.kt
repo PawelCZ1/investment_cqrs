@@ -1,7 +1,9 @@
 package com.pawelcz.investment_cqrs.command.api.aggregates
 
 import com.pawelcz.investment_cqrs.command.api.commands.CreateInvestmentCommand
+import com.pawelcz.investment_cqrs.command.api.commands.DeactivateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.events.InvestmentCreatedEvent
+import com.pawelcz.investment_cqrs.command.api.events.InvestmentDeactivatedEvent
 import com.pawelcz.investment_cqrs.core.api.value_objects.InvestmentPeriodInMonths
 import com.pawelcz.investment_cqrs.core.api.value_objects.InvestmentStatus
 import org.axonframework.commandhandling.CommandHandler
@@ -46,6 +48,23 @@ class Investment {
         this.investmentPeriodInMonths = investmentCreatedEvent.investmentPeriodInMonths
         this.expirationDate = investmentCreatedEvent.expirationDate
         this.investmentStatus = investmentCreatedEvent.investmentStatus
+    }
+
+    @CommandHandler
+    fun handle(deactivateInvestmentCommand: DeactivateInvestmentCommand){
+        val investmentDeactivatedEvent = InvestmentDeactivatedEvent(
+            deactivateInvestmentCommand.investmentId,
+            LocalDate.now(),
+            InvestmentStatus.INACTIVE
+        )
+        AggregateLifecycle.apply(investmentDeactivatedEvent)
+    }
+
+    @EventSourcingHandler
+    fun on(investmentDeactivatedEvent: InvestmentDeactivatedEvent){
+        this.investmentId = investmentDeactivatedEvent.investmentId
+        this.expirationDate = investmentDeactivatedEvent.expirationDate
+        this.investmentStatus = investmentDeactivatedEvent.investmentStatus
     }
 
     constructor()

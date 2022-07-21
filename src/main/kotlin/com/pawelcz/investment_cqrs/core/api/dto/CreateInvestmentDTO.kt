@@ -1,10 +1,10 @@
-package com.pawelcz.investment_cqrs.core.api.DTOs
+package com.pawelcz.investment_cqrs.core.api.dto
 
 import com.pawelcz.investment_cqrs.core.api.value_objects.InvestmentPeriodInMonths
 import com.pawelcz.investment_cqrs.core.api.value_objects.InvestmentStatus
 import java.time.LocalDate
 
-data class InvestmentDTO(
+data class CreateInvestmentDTO(
     val name: String,
     val minimumAmount: Double,
     val maximumAmount: Double,

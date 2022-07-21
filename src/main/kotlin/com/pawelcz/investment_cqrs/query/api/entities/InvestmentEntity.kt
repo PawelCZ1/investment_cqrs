@@ -11,13 +11,13 @@ import javax.persistence.Id
 @Entity
 data class InvestmentEntity(
     @Id
-    val investmentId: String,
-    val name: String,
-    val minimumAmount: Double,
-    val maximumAmount: Double,
+    var investmentId: String,
+    var name: String,
+    var minimumAmount: Double,
+    var maximumAmount: Double,
     @Enumerated(EnumType.STRING)
-    val investmentPeriodInMonths: InvestmentPeriodInMonths,
-    val expirationDate: LocalDate,
+    var investmentPeriodInMonths: InvestmentPeriodInMonths,
+    var expirationDate: LocalDate,
     @Enumerated(EnumType.STRING)
-    val investmentStatus: InvestmentStatus
+    var investmentStatus: InvestmentStatus
 )
