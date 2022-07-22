@@ -2,6 +2,7 @@ package com.pawelcz.investment_cqrs.core.api.controllers
 
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.services.InvestmentService
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -22,6 +23,11 @@ class InvestmentController(
     @PatchMapping("/{investmentId}")
     fun deactivateInvestment(@PathVariable investmentId: String)
     = investmentService.deactivateInvestment(investmentId)
+
+    @GetMapping
+    fun getAllInvestments() = investmentService.getAllInvestments()
+
+
 
 
 }
