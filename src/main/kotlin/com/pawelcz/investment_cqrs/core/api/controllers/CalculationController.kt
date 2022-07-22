@@ -1,4 +1,4 @@
-/*
+
 package com.pawelcz.investment_cqrs.core.api.controllers
 
 import com.pawelcz.investment_cqrs.core.api.dto.RegisterNewCalculationDTO
@@ -19,4 +19,3 @@ class CalculationController(private val calculationService: CalculationService) 
 
 }
 
- */

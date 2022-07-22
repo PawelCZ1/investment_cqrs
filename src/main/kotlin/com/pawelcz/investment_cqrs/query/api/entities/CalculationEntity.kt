@@ -1,5 +1,6 @@
 package com.pawelcz.investment_cqrs.query.api.entities
 
+import java.math.BigDecimal
 import java.time.LocalDate
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -15,6 +16,7 @@ data class CalculationEntity(
     val investmentTarget: String,
     val startDate: LocalDate,
     val endDate: LocalDate,
+    val profit: BigDecimal,
     @ManyToOne
     @JoinColumn(name = "investment_id", nullable = false)
     val investment: InvestmentEntity,

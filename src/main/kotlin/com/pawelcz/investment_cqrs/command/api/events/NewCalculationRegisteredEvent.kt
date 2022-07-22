@@ -1,14 +1,15 @@
 package com.pawelcz.investment_cqrs.command.api.events
 
+import java.math.BigDecimal
 import java.time.LocalDate
 
 data class NewCalculationRegisteredEvent(
     val calculationId: String,
     val amount: Double,
     val investmentTarget: String,
-    val periodInMonths: String,
     val startDate: LocalDate,
     val endDate: LocalDate,
+    val profit: BigDecimal,
     val investmentId: String,
     val walletId: String
 )
