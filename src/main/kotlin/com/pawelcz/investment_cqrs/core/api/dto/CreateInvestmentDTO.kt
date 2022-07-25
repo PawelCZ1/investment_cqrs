@@ -1,8 +1,8 @@
 package com.pawelcz.investment_cqrs.core.api.dto
 
-import com.pawelcz.investment_cqrs.core.api.value_objects.InvestmentStatus
+
 import java.time.LocalDate
-import java.util.*
+
 
 data class CreateInvestmentDTO(
     val name: String,
@@ -10,5 +10,4 @@ data class CreateInvestmentDTO(
     val maximumAmount: Double,
     val availableInvestmentPeriods: String,
     val expirationDate: LocalDate,
-    val investmentStatus: InvestmentStatus
 )

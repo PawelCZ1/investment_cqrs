@@ -4,7 +4,6 @@ import com.pawelcz.investment_cqrs.command.api.commands.CreateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.DeactivateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.events.InvestmentCreatedEvent
 import com.pawelcz.investment_cqrs.command.api.events.InvestmentDeactivatedEvent
-import com.pawelcz.investment_cqrs.core.api.value_objects.InvestmentStatus
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateIdentifier
@@ -22,7 +21,8 @@ class Investment {
     private var maximumAmount by Delegates.notNull<Double>()
     private lateinit var availableInvestmentPeriods: Map<String, Double>
     private lateinit var expirationDate: LocalDate
-    private lateinit var investmentStatus: InvestmentStatus
+    private var investmentStatus by Delegates.notNull<Boolean>()
+
 
     @CommandHandler
     constructor(createInvestmentCommand: CreateInvestmentCommand){
@@ -33,7 +33,7 @@ class Investment {
             createInvestmentCommand.maximumAmount,
             createInvestmentCommand.availableInvestmentPeriods,
             createInvestmentCommand.expirationDate,
-            createInvestmentCommand.investmentStatus
+            LocalDate.now().isBefore(createInvestmentCommand.expirationDate)
         )
         AggregateLifecycle.apply(investmentCreatedEvent)
     }
@@ -54,7 +54,7 @@ class Investment {
         val investmentDeactivatedEvent = InvestmentDeactivatedEvent(
             deactivateInvestmentCommand.investmentId,
             LocalDate.now(),
-            InvestmentStatus.INACTIVE
+            false
         )
         AggregateLifecycle.apply(investmentDeactivatedEvent)
     }

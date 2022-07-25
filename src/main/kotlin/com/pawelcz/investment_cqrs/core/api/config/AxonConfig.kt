@@ -1,16 +1,14 @@
 package com.pawelcz.investment_cqrs.core.api.config
 
 //import com.pawelcz.investment_cqrs.command.api.aggregates.Calculation
-import com.pawelcz.investment_cqrs.command.api.aggregates.Investment
-import com.pawelcz.investment_cqrs.command.api.aggregates.Investor
-import com.pawelcz.investment_cqrs.command.api.aggregates.Wallet
+
 import com.rabbitmq.client.Channel
-import org.axonframework.eventsourcing.EventSourcingRepository
-import org.axonframework.eventsourcing.eventstore.EventStore
+import org.axonframework.common.jdbc.ConnectionProvider
+import org.axonframework.common.transaction.NoTransactionManager
+import org.axonframework.eventsourcing.eventstore.jdbc.JdbcEventStorageEngine
 import org.axonframework.extensions.amqp.eventhandling.AMQPMessageConverter
 import org.axonframework.extensions.amqp.eventhandling.spring.SpringAMQPMessageSource
 import org.springframework.amqp.core.Message
-
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -18,6 +16,7 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class AxonConfig {
+  /*
     @Bean
     fun investmentEventSourcingRepository(eventStore: EventStore?): EventSourcingRepository<Investment> {
         return EventSourcingRepository.builder(Investment::class.java)
@@ -35,7 +34,7 @@ class AxonConfig {
         return EventSourcingRepository.builder(Wallet::class.java)
             .eventStore(eventStore).build()
     }
-/*
+
     @Bean
     fun calculationEventSourcingRepository(eventStore: EventStore?): EventSourcingRepository<Calculation> {
         return EventSourcingRepository.builder(Calculation::class.java)
@@ -52,5 +51,6 @@ class AxonConfig {
             }
         }
     }
+
 
 }

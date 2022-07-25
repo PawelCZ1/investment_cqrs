@@ -25,8 +25,7 @@ class InvestmentService(
             createInvestmentDTO.minimumAmount,
             createInvestmentDTO.maximumAmount,
             MapConverter.stringToMap(createInvestmentDTO.availableInvestmentPeriods),
-            createInvestmentDTO.expirationDate,
-            createInvestmentDTO.investmentStatus
+            createInvestmentDTO.expirationDate
         )
 
         return commandGateway.sendAndWait(createInvestmentCommand)

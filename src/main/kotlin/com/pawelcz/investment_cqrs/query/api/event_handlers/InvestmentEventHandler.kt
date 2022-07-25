@@ -19,8 +19,7 @@ class InvestmentEventHandler(private val investmentEntityRepository: InvestmentE
             investmentCreatedEvent.minimumAmount,
             investmentCreatedEvent.maximumAmount,
             MapConverter.mapToString(investmentCreatedEvent.availableInvestmentPeriods),
-            investmentCreatedEvent.expirationDate,
-            investmentCreatedEvent.investmentStatus
+            investmentCreatedEvent.expirationDate
         )
         investmentEntityRepository.save(investment)
     }
@@ -29,7 +28,6 @@ class InvestmentEventHandler(private val investmentEntityRepository: InvestmentE
     fun on(investmentDeactivatedEvent: InvestmentDeactivatedEvent){
         val investment = investmentEntityRepository.findById(investmentDeactivatedEvent.investmentId)
         investment.get().expirationDate = investmentDeactivatedEvent.expirationDate
-        investment.get().investmentStatus = investmentDeactivatedEvent.investmentStatus
         investmentEntityRepository.save(investment.get())
     }
 }

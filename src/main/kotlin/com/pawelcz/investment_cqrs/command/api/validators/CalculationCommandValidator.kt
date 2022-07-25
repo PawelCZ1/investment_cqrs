@@ -6,6 +6,7 @@ import com.pawelcz.investment_cqrs.core.api.util.MapConverter
 import com.pawelcz.investment_cqrs.query.api.repositories.InvestmentEntityRepository
 import com.pawelcz.investment_cqrs.query.api.repositories.WalletEntityRepository
 import org.springframework.stereotype.Component
+import java.time.LocalDate
 import java.util.*
 
 @Component
@@ -22,6 +23,8 @@ class CalculationCommandValidator(
         if(optionalWallet.isEmpty)
             throw IllegalArgumentException("Such wallet doesn't exist")
         val investment = optionalInvestment.get()
+        if(!investment.isActive())
+            throw IllegalArgumentException("This investment isn't active")
         val availableInvestmentPeriods = MapConverter.stringToMap(investment.availableInvestmentPeriods)
         if (!(registerNewCalculationDTO.amount >= investment.minimumAmount
             && registerNewCalculationDTO.amount <= investment.maximumAmount))

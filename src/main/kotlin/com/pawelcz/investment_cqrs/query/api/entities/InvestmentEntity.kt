@@ -1,6 +1,6 @@
 package com.pawelcz.investment_cqrs.query.api.entities
 
-import com.pawelcz.investment_cqrs.core.api.value_objects.InvestmentStatus
+
 import java.time.LocalDate
 import javax.persistence.*
 
@@ -13,8 +13,8 @@ data class InvestmentEntity(
     var maximumAmount: Double,
     var availableInvestmentPeriods: String,
     var expirationDate: LocalDate,
-    @Enumerated(EnumType.STRING)
-    var investmentStatus: InvestmentStatus,
     @OneToMany(mappedBy = "investment", fetch = FetchType.LAZY)
     var calculations: List<CalculationEntity> = mutableListOf()
-)
+){
+    fun isActive() = LocalDate.now().isBefore(expirationDate)
+}

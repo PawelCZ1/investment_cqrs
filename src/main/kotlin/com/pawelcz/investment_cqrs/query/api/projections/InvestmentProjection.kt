@@ -23,7 +23,7 @@ class InvestmentProjection(private val investmentEntityRepository: InvestmentEnt
                     investmentEntity.maximumAmount,
                     investmentEntity.availableInvestmentPeriods,
                     investmentEntity.expirationDate,
-                    investmentEntity.investmentStatus
+                    investmentEntity.isActive()
                 )
             )
         return investments
