@@ -3,6 +3,7 @@ package com.pawelcz.investment_cqrs.core.api.services
 
 import com.pawelcz.investment_cqrs.command.api.commands.RegisterNewCalculationCommand
 import com.pawelcz.investment_cqrs.command.api.validators.CalculationCommandValidator
+import com.pawelcz.investment_cqrs.core.api.dto.GetAllCalculationsDTO
 import com.pawelcz.investment_cqrs.core.api.dto.RegisterNewCalculationDTO
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllCalculationsQuery
 import com.pawelcz.investment_cqrs.query.api.repositories.InvestmentEntityRepository
@@ -26,9 +27,9 @@ class CalculationService(
         return commandGateway.sendAndWait(calculationCommandValidator.validateAndReturn(registerNewCalculationDTO))
     }
 
-    fun getAllCalculations(): List<RegisterNewCalculationDTO>{
+    fun getAllCalculations(): List<GetAllCalculationsDTO>{
         val getAllCalculationsQuery = GetAllCalculationsQuery()
         return queryGateway.query(getAllCalculationsQuery,
-            ResponseTypes.multipleInstancesOf(RegisterNewCalculationDTO::class.java)).join()
+            ResponseTypes.multipleInstancesOf(GetAllCalculationsDTO::class.java)).join()
     }
 }

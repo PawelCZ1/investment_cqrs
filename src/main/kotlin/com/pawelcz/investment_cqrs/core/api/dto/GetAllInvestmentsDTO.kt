@@ -2,9 +2,9 @@ package com.pawelcz.investment_cqrs.core.api.dto
 
 import com.pawelcz.investment_cqrs.core.api.value_objects.InvestmentStatus
 import java.time.LocalDate
-import java.util.*
 
-data class CreateInvestmentDTO(
+data class GetAllInvestmentsDTO(
+    val investmentId: String,
     val name: String,
     val minimumAmount: Double,
     val maximumAmount: Double,

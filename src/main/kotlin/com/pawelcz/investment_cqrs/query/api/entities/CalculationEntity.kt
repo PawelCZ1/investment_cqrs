@@ -14,6 +14,8 @@ data class CalculationEntity(
     val calculationId: String,
     val amount: Double,
     val investmentTarget: String,
+    val capitalizationPeriodInMonths: String,
+    val annualInterestRate: Double,
     val startDate: LocalDate,
     val endDate: LocalDate,
     val profit: BigDecimal,

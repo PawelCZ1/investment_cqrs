@@ -22,6 +22,8 @@ class Calculation {
     private lateinit var calculationId: String
     private var amount by Delegates.notNull<Double>()
     private lateinit var investmentTarget: String
+    private lateinit var capitalizationPeriodInMonths: String
+    private var annualInterestRate by Delegates.notNull<Double>()
     private lateinit var startDate: LocalDate
     private lateinit var endDate: LocalDate
     private lateinit var profit: BigDecimal
@@ -35,6 +37,8 @@ class Calculation {
             registerNewCalculationCommand.calculationId,
             registerNewCalculationCommand.amount,
             registerNewCalculationCommand.investmentTarget,
+            registerNewCalculationCommand.capitalizationPeriod,
+            registerNewCalculationCommand.annualInterestRate,
             LocalDate.now(),
             LocalDate.now().plusMonths(registerNewCalculationCommand.periodInMonths.toLong()),
             ProfitCalculator.profitCalculation(registerNewCalculationCommand.amount,
@@ -51,6 +55,8 @@ class Calculation {
         this.calculationId = newCalculationRegisteredEvent.calculationId
         this.amount = newCalculationRegisteredEvent.amount
         this.investmentTarget = newCalculationRegisteredEvent.investmentTarget
+        this.capitalizationPeriodInMonths = newCalculationRegisteredEvent.capitalizationPeriodInMonths
+        this.annualInterestRate = newCalculationRegisteredEvent.annualInterestRate
         this.startDate = newCalculationRegisteredEvent.startDate
         this.endDate = newCalculationRegisteredEvent.endDate
         this.profit = newCalculationRegisteredEvent.profit

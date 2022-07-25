@@ -3,6 +3,7 @@ package com.pawelcz.investment_cqrs.core.api.services
 import com.pawelcz.investment_cqrs.command.api.commands.CreateWalletCommand
 import com.pawelcz.investment_cqrs.command.api.validators.WalletCommandValidator
 import com.pawelcz.investment_cqrs.core.api.dto.CreateWalletDTO
+import com.pawelcz.investment_cqrs.core.api.dto.GetAllWalletsDTO
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllWalletsQuery
 import com.pawelcz.investment_cqrs.query.api.repositories.InvestorEntityRepository
 import org.axonframework.commandhandling.gateway.CommandGateway
@@ -22,9 +23,9 @@ class WalletService(
         return commandGateway.sendAndWait(walletCommandValidator.validateAndReturn(createWalletDTO))
     }
 
-    fun getAllWallets(): List<CreateWalletDTO>{
+    fun getAllWallets(): List<GetAllWalletsDTO>{
         val getAllWalletsQuery = GetAllWalletsQuery()
         return queryGateway.query(getAllWalletsQuery,
-            ResponseTypes.multipleInstancesOf(CreateWalletDTO::class.java)).join()
+            ResponseTypes.multipleInstancesOf(GetAllWalletsDTO::class.java)).join()
     }
 }

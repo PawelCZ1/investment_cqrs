@@ -26,6 +26,8 @@ class CalculationEventHandler(
             newCalculationRegisteredEvent.calculationId,
             newCalculationRegisteredEvent.amount,
             newCalculationRegisteredEvent.investmentTarget,
+            newCalculationRegisteredEvent.capitalizationPeriodInMonths,
+            newCalculationRegisteredEvent.annualInterestRate,
             newCalculationRegisteredEvent.startDate,
             newCalculationRegisteredEvent.endDate,
             newCalculationRegisteredEvent.profit,

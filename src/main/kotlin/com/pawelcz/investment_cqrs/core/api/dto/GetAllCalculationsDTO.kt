@@ -1,9 +1,9 @@
-package com.pawelcz.investment_cqrs.command.api.events
+package com.pawelcz.investment_cqrs.core.api.dto
 
 import java.math.BigDecimal
 import java.time.LocalDate
 
-data class NewCalculationRegisteredEvent(
+data class GetAllCalculationsDTO(
     val calculationId: String,
     val amount: Double,
     val investmentTarget: String,

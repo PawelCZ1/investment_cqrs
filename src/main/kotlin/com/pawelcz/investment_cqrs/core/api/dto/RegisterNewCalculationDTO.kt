@@ -4,7 +4,6 @@ import java.time.LocalDate
 import java.util.UUID
 
 data class RegisterNewCalculationDTO(
-    val calculationId: String = UUID.randomUUID().toString(),
     val amount: Double,
     val investmentTarget: String,
     val capitalizationPeriod: String,

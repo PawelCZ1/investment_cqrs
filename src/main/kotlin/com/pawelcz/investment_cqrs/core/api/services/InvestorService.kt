@@ -1,6 +1,7 @@
 package com.pawelcz.investment_cqrs.core.api.services
 
 import com.pawelcz.investment_cqrs.command.api.commands.RegisterNewInvestorCommand
+import com.pawelcz.investment_cqrs.core.api.dto.GetAllInvestorsDTO
 import com.pawelcz.investment_cqrs.core.api.dto.RegisterNewInvestorDTO
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllInvestorsQuery
 import org.axonframework.commandhandling.gateway.CommandGateway
@@ -25,9 +26,9 @@ class InvestorService(
         return commandGateway.sendAndWait(registerNewInvestorCommand)
     }
 
-    fun getAllInvestors(): List<RegisterNewInvestorDTO>{
+    fun getAllInvestors(): List<GetAllInvestorsDTO>{
         val getAllInvestorsQuery = GetAllInvestorsQuery()
         return queryGateway.query(getAllInvestorsQuery,
-            ResponseTypes.multipleInstancesOf(RegisterNewInvestorDTO::class.java)).join()
+            ResponseTypes.multipleInstancesOf(GetAllInvestorsDTO::class.java)).join()
     }
 }

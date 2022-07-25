@@ -1,6 +1,7 @@
 package com.pawelcz.investment_cqrs.query.api.projections
 
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
+import com.pawelcz.investment_cqrs.core.api.dto.GetAllInvestmentsDTO
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllInvestmentsQuery
 import com.pawelcz.investment_cqrs.query.api.repositories.InvestmentEntityRepository
 import org.axonframework.queryhandling.QueryHandler
@@ -10,12 +11,12 @@ import org.springframework.stereotype.Component
 class InvestmentProjection(private val investmentEntityRepository: InvestmentEntityRepository) {
 
     @QueryHandler
-    fun handle(getAllInvestmentsQuery: GetAllInvestmentsQuery): List<CreateInvestmentDTO>{
+    fun handle(getAllInvestmentsQuery: GetAllInvestmentsQuery): List<GetAllInvestmentsDTO>{
         val investmentEntities = investmentEntityRepository.findAll()
-        val investments = arrayListOf<CreateInvestmentDTO>()
+        val investments = arrayListOf<GetAllInvestmentsDTO>()
         for(investmentEntity in investmentEntities)
             investments.add(
-                CreateInvestmentDTO(
+                GetAllInvestmentsDTO(
                     investmentEntity.investmentId,
                     investmentEntity.name,
                     investmentEntity.minimumAmount,
