@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.util.*
 
-@Component
+
 class CalculationCommandValidator(
     private val investmentEntityRepository: InvestmentEntityRepository,
     private val walletEntityRepository: WalletEntityRepository

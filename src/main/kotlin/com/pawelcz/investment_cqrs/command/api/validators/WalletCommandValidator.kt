@@ -7,7 +7,7 @@ import com.pawelcz.investment_cqrs.query.api.repositories.InvestorEntityReposito
 import org.springframework.stereotype.Component
 import java.util.*
 
-@Component
+
 class WalletCommandValidator(
     private val investorEntityRepository: InvestorEntityRepository
 ) {

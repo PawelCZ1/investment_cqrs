@@ -4,36 +4,33 @@ import com.pawelcz.investment_cqrs.command.api.commands.CreateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.DeactivateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.events.InvestmentCreatedEvent
 import com.pawelcz.investment_cqrs.command.api.events.InvestmentDeactivatedEvent
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AmountRange
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AvailableCapitalizationPeriods
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.InvestmentId
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.Status
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateIdentifier
 import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.spring.stereotype.Aggregate
 import java.time.LocalDate
-import kotlin.properties.Delegates
 
 @Aggregate
 class Investment {
     @AggregateIdentifier
-    private lateinit var investmentId: String
-    private lateinit var name: String
-    private var minimumAmount by Delegates.notNull<Double>()
-    private var maximumAmount by Delegates.notNull<Double>()
-    private lateinit var availableInvestmentPeriods: Map<String, Double>
-    private lateinit var expirationDate: LocalDate
-    private var investmentStatus by Delegates.notNull<Boolean>()
+    private lateinit var investmentId: InvestmentId
+    private lateinit var amountRange: AmountRange
+    private lateinit var availableCapitalizationPeriods: AvailableCapitalizationPeriods
+    private lateinit var status: Status
 
 
     @CommandHandler
     constructor(createInvestmentCommand: CreateInvestmentCommand){
         val investmentCreatedEvent = InvestmentCreatedEvent(
             createInvestmentCommand.investmentId,
-            createInvestmentCommand.name,
-            createInvestmentCommand.minimumAmount,
-            createInvestmentCommand.maximumAmount,
-            createInvestmentCommand.availableInvestmentPeriods,
-            createInvestmentCommand.expirationDate,
-            LocalDate.now().isBefore(createInvestmentCommand.expirationDate)
+            createInvestmentCommand.amountRange,
+            createInvestmentCommand.availableCapitalizationPeriods,
+            Status.ACTIVE
         )
         AggregateLifecycle.apply(investmentCreatedEvent)
     }
@@ -41,12 +38,9 @@ class Investment {
     @EventSourcingHandler
     fun on(investmentCreatedEvent: InvestmentCreatedEvent){
         this.investmentId = investmentCreatedEvent.investmentId
-        this.name = investmentCreatedEvent.name
-        this.minimumAmount = investmentCreatedEvent.minimumAmount
-        this.maximumAmount = investmentCreatedEvent.maximumAmount
-        this.availableInvestmentPeriods = investmentCreatedEvent.availableInvestmentPeriods
-        this.expirationDate = investmentCreatedEvent.expirationDate
-        this.investmentStatus = investmentCreatedEvent.investmentStatus
+        this.amountRange = investmentCreatedEvent.amountRange
+        this.availableCapitalizationPeriods = investmentCreatedEvent.availableCapitalizationPeriods
+        this.status = investmentCreatedEvent.status
     }
 
     @CommandHandler
@@ -61,9 +55,8 @@ class Investment {
 
     @EventSourcingHandler
     fun on(investmentDeactivatedEvent: InvestmentDeactivatedEvent){
-        this.investmentId = investmentDeactivatedEvent.investmentId
-        this.expirationDate = investmentDeactivatedEvent.expirationDate
-        this.investmentStatus = investmentDeactivatedEvent.investmentStatus
+
+
     }
 
     constructor()
