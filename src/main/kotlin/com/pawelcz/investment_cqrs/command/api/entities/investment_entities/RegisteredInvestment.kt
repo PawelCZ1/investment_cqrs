@@ -1,9 +1,9 @@
-package com.pawelcz.investment_cqrs.command.api.entities.investor_entities
+package com.pawelcz.investment_cqrs.command.api.entities.investment_entities
 
 import com.pawelcz.investment_cqrs.command.api.value_objects.Money
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.InvestmentId
-import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects.InvestmentPeriod
-import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects.RegisteredInvestmentId
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.InvestmentPeriod
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.RegisteredInvestmentId
 import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects.WalletId
 
 data class RegisteredInvestment(

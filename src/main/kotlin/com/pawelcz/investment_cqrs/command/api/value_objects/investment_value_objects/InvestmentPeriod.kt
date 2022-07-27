@@ -1,4 +1,4 @@
-package com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects
+package com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects
 
 import java.time.LocalDate
 

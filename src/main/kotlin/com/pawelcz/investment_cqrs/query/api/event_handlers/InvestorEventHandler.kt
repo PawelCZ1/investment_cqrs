@@ -12,10 +12,10 @@ class InvestorEventHandler(private val investorEntityRepository: InvestorEntityR
     @EventHandler
     fun on(newInvestorRegisteredEvent: NewInvestorRegisteredEvent){
         val investor = InvestorEntity(
-            newInvestorRegisteredEvent.investorId,
-            newInvestorRegisteredEvent.name,
-            newInvestorRegisteredEvent.surname,
-            newInvestorRegisteredEvent.dateOfBirth
+            newInvestorRegisteredEvent.investorId.id,
+            newInvestorRegisteredEvent.personalData.name,
+            newInvestorRegisteredEvent.personalData.surname,
+            newInvestorRegisteredEvent.personalData.dateOfBirth
         )
         investorEntityRepository.save(investor)
     }

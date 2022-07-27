@@ -1,24 +1,25 @@
 package com.pawelcz.investment_cqrs.query.api.entities
 
+import com.pawelcz.investment_cqrs.command.api.value_objects.Currency
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.RegisteredInvestmentId
 import java.math.BigDecimal
 import java.time.LocalDate
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
+import javax.persistence.*
 
 
 @Entity
-data class CalculationEntity(
+data class RegisteredInvestmentEntity(
     @Id
-    val calculationId: String,
+    val registeredInvestmentId: String,
+    @Enumerated(EnumType.STRING)
+    val currency: Currency,
     val amount: Double,
     val investmentTarget: String,
     val capitalizationPeriodInMonths: String,
     val annualInterestRate: Double,
     val startDate: LocalDate,
     val endDate: LocalDate,
-    val profit: BigDecimal,
+    val profit: Double,
     @ManyToOne
     @JoinColumn(name = "investment_id", nullable = false)
     val investment: InvestmentEntity,

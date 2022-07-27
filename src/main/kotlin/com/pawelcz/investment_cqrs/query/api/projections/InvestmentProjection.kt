@@ -2,13 +2,19 @@ package com.pawelcz.investment_cqrs.query.api.projections
 
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.dto.GetAllInvestmentsDTO
+import com.pawelcz.investment_cqrs.core.api.dto.GetAllRegisteredInvestmentsDTO
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllInvestmentsQuery
+import com.pawelcz.investment_cqrs.query.api.queries.GetAllRegisteredInvestmentsQuery
 import com.pawelcz.investment_cqrs.query.api.repositories.InvestmentEntityRepository
+import com.pawelcz.investment_cqrs.query.api.repositories.RegisteredInvestmentEntityRepository
 import org.axonframework.queryhandling.QueryHandler
 import org.springframework.stereotype.Component
 
 @Component
-class InvestmentProjection(private val investmentEntityRepository: InvestmentEntityRepository) {
+class InvestmentProjection(
+    private val investmentEntityRepository: InvestmentEntityRepository,
+    private val registeredInvestmentEntityRepository: RegisteredInvestmentEntityRepository
+) {
 
     @QueryHandler
     fun handle(getAllInvestmentsQuery: GetAllInvestmentsQuery): List<GetAllInvestmentsDTO>{
@@ -18,16 +24,37 @@ class InvestmentProjection(private val investmentEntityRepository: InvestmentEnt
             investments.add(
                 GetAllInvestmentsDTO(
                     investmentEntity.investmentId,
-                    investmentEntity.name,
                     investmentEntity.minimumAmount,
                     investmentEntity.maximumAmount,
+                    investmentEntity.currency,
                     investmentEntity.availableInvestmentPeriods,
-                    investmentEntity.expirationDate,
-                    investmentEntity.isActive()
+                    investmentEntity.status
                 )
             )
         return investments
         }
+
+    @QueryHandler
+    fun handle(getAllRegisteredInvestmentsQuery: GetAllRegisteredInvestmentsQuery): List<GetAllRegisteredInvestmentsDTO>{
+        val registeredInvestmentEntites = registeredInvestmentEntityRepository.findAll()
+        val registeredInvestments = arrayListOf<GetAllRegisteredInvestmentsDTO>()
+        for(registeredInvestmentEntity in registeredInvestmentEntites)
+            registeredInvestments.add(
+                GetAllRegisteredInvestmentsDTO(
+                    registeredInvestmentEntity.registeredInvestmentId,
+                    registeredInvestmentEntity.amount,
+                    registeredInvestmentEntity.investmentTarget,
+                    registeredInvestmentEntity.capitalizationPeriodInMonths,
+                    registeredInvestmentEntity.annualInterestRate,
+                    registeredInvestmentEntity.startDate,
+                    registeredInvestmentEntity.endDate,
+                    registeredInvestmentEntity.profit,
+                    registeredInvestmentEntity.investment.investmentId,
+                    registeredInvestmentEntity.wallet.walletId
+                )
+            )
+        return registeredInvestments
+    }
 
 
 }

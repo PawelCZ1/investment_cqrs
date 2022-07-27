@@ -13,4 +13,8 @@ data class AmountRange(
             throw IllegalArgumentException("Currencies doesn't match")
     }
 
+    fun isBetween(amount: Double): Boolean {
+        return (amount >= this.minimumAmount.amount) && (amount <= this.maximumAmount.amount)
+    }
+
 }

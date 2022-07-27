@@ -2,7 +2,7 @@ package com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_obj
 
 import java.util.*
 
-class InvestorId(
+data class InvestorId(
     val id: String
 ){
     companion object{

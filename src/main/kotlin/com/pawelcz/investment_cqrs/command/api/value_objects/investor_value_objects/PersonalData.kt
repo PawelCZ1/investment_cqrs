@@ -8,5 +8,9 @@ data class PersonalData(
     val surname: String,
     val dateOfBirth: LocalDate
 ){
+    init {
+        if(dateOfBirth.isAfter(LocalDate.now().minusYears(18)))
+            throw IllegalArgumentException("This person is too young to be registered as investor")
+    }
 
 }
