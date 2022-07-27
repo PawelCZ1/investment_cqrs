@@ -33,7 +33,7 @@ class InvestmentController(
     = investmentService.registerNewInvestment(registerNewInvestmentDTO)
 
     @GetMapping("/registered")
-    fun getAllRegisteredInvest() = investmentService.getAllRegisteredInvestments()
+    fun getAllRegisteredInvestments() = investmentService.getAllRegisteredInvestments()
 
 
 }
