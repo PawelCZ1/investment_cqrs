@@ -15,9 +15,9 @@ class WalletEventHandler(
 
     @EventHandler
     fun on(walletCreatedEvent: WalletCreatedEvent){
-        val investor = investorEntityRepository.findById(walletCreatedEvent.investorId).get()
+        val investor = investorEntityRepository.findById(walletCreatedEvent.investorId.id).get()
         val wallet = WalletEntity(
-            walletCreatedEvent.walletId,
+            walletCreatedEvent.walletId.id,
             walletCreatedEvent.name,
             investor
         )

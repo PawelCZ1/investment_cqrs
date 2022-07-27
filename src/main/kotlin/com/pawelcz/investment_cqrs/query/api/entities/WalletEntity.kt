@@ -11,5 +11,5 @@ data class WalletEntity(
     @JoinColumn(name = "investor_id", nullable = false)
     var investor: InvestorEntity,
     @OneToMany(mappedBy = "wallet", fetch = FetchType.LAZY)
-    var calculations: List<CalculationEntity> = mutableListOf()
+    var registeredInvestments: List<RegisteredInvestmentEntity> = mutableListOf()
 )

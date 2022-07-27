@@ -14,20 +14,20 @@ class InvestmentEventHandler(private val investmentEntityRepository: InvestmentE
     @EventHandler
     fun on(investmentCreatedEvent: InvestmentCreatedEvent){
         val investment = InvestmentEntity(
-            investmentCreatedEvent.investmentId,
-            investmentCreatedEvent.name,
-            investmentCreatedEvent.minimumAmount,
-            investmentCreatedEvent.maximumAmount,
-            MapConverter.mapToString(investmentCreatedEvent.availableInvestmentPeriods),
-            investmentCreatedEvent.expirationDate
+            investmentCreatedEvent.investmentId.id,
+            investmentCreatedEvent.amountRange.minimumAmount.amount,
+            investmentCreatedEvent.amountRange.maximumAmount.amount,
+            investmentCreatedEvent.amountRange.maximumAmount.currency,
+            MapConverter.mapToString(investmentCreatedEvent.availableCapitalizationPeriods.capitalizationPeriods),
+            investmentCreatedEvent.status
         )
         investmentEntityRepository.save(investment)
     }
 
     @EventHandler
     fun on(investmentDeactivatedEvent: InvestmentDeactivatedEvent){
-        val investment = investmentEntityRepository.findById(investmentDeactivatedEvent.investmentId)
-        investment.get().expirationDate = investmentDeactivatedEvent.expirationDate
+        val investment = investmentEntityRepository.findById(investmentDeactivatedEvent.investmentId.id)
+        investment.get().status = investmentDeactivatedEvent.status
         investmentEntityRepository.save(investment.get())
     }
 }

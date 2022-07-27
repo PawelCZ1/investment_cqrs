@@ -1,15 +1,19 @@
 package com.pawelcz.investment_cqrs.query.api.projections
 
 import com.pawelcz.investment_cqrs.core.api.dto.GetAllInvestorsDTO
+import com.pawelcz.investment_cqrs.core.api.dto.GetAllWalletsDTO
 import com.pawelcz.investment_cqrs.core.api.dto.RegisterNewInvestorDTO
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllInvestorsQuery
+import com.pawelcz.investment_cqrs.query.api.queries.GetAllWalletsQuery
 import com.pawelcz.investment_cqrs.query.api.repositories.InvestorEntityRepository
+import com.pawelcz.investment_cqrs.query.api.repositories.WalletEntityRepository
 import org.axonframework.queryhandling.QueryHandler
 import org.springframework.stereotype.Component
 
 @Component
 class InvestorProjection(
-    private val investorEntityRepository: InvestorEntityRepository
+    private val investorEntityRepository: InvestorEntityRepository,
+    private val walletEntityRepository: WalletEntityRepository
 ) {
     @QueryHandler
     fun handle(getAllInvestorsQuery: GetAllInvestorsQuery): List<GetAllInvestorsDTO>{
@@ -30,5 +34,25 @@ class InvestorProjection(
             )
         }
         return investors
+    }
+
+    @QueryHandler
+    fun handle(getAllWalletsQuery: GetAllWalletsQuery): List<GetAllWalletsDTO>{
+        val walletEntities = walletEntityRepository.findAll()
+        val wallets = arrayListOf<GetAllWalletsDTO>()
+        for(walletEntity in walletEntities) {
+            val registeredInvestments = arrayListOf<String>()
+            for (registeredInvestment in walletEntity.registeredInvestments)
+                registeredInvestments.add(registeredInvestment.registeredInvestmentId)
+            wallets.add(
+                GetAllWalletsDTO(
+                    walletEntity.walletId,
+                    walletEntity.name,
+                    walletEntity.investor.investorId,
+                    registeredInvestments
+                )
+            )
+        }
+        return wallets
     }
 }

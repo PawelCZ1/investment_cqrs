@@ -1,13 +1,11 @@
 package com.pawelcz.investment_cqrs.core.api.dto
 
 
-import java.time.LocalDate
-
+import com.pawelcz.investment_cqrs.command.api.value_objects.Currency
 
 data class CreateInvestmentDTO(
-    val name: String,
+    val currency: Currency,
     val minimumAmount: Double,
     val maximumAmount: Double,
     val availableInvestmentPeriods: String,
-    val expirationDate: LocalDate,
 )
