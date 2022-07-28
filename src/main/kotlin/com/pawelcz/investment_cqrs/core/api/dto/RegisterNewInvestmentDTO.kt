@@ -4,6 +4,7 @@ import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_ob
 import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects.WalletId
 
 data class RegisterNewInvestmentDTO(
+    val investorId: String,
     val amount: Double,
     val investmentTarget: String,
     val capitalizationPeriod: String,

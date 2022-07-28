@@ -1,15 +1,11 @@
 package com.pawelcz.investment_cqrs.command.api.events
 
 import com.pawelcz.investment_cqrs.command.api.value_objects.Money
-import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.InvestmentId
-import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.InvestmentPeriod
-import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.RegisteredInvestmentId
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.*
 import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects.InvestorId
 import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects.WalletId
-import java.math.BigDecimal
-import java.time.LocalDate
 
-data class NewInvestmentRegisteredEvent(
+data class ProfitCalculatedEvent(
     val investorId: InvestorId,
     val investmentId: InvestmentId,
     val registeredInvestmentId: RegisteredInvestmentId,

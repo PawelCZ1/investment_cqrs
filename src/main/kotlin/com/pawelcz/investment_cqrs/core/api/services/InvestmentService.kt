@@ -9,6 +9,7 @@ import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_ob
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AvailableCapitalizationPeriods
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.InvestmentId
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.RegisteredInvestmentId
+import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects.InvestorId
 import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects.WalletId
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.dto.GetAllInvestmentsDTO
@@ -55,6 +56,7 @@ class InvestmentService(
 
     fun registerNewInvestment(registerNewInvestmentDTO: RegisterNewInvestmentDTO): InvestmentId? {
         val registerInvestmentCommand = RegisterInvestmentCommand(
+            InvestorId(registerNewInvestmentDTO.investorId),
             InvestmentId(registerNewInvestmentDTO.investmentId),
             RegisteredInvestmentId.generateRegisteredInvestmentId(),
             registerNewInvestmentDTO.amount,

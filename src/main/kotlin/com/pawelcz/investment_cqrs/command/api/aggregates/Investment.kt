@@ -2,10 +2,11 @@ package com.pawelcz.investment_cqrs.command.api.aggregates
 
 import com.pawelcz.investment_cqrs.command.api.commands.CreateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.DeactivateInvestmentCommand
-import com.pawelcz.investment_cqrs.command.api.commands.RegisterInvestmentCommand
+import com.pawelcz.investment_cqrs.command.api.commands.CalculateProfitCommand
 import com.pawelcz.investment_cqrs.command.api.entities.investment_entities.RegisteredInvestment
 import com.pawelcz.investment_cqrs.command.api.events.InvestmentCreatedEvent
 import com.pawelcz.investment_cqrs.command.api.events.InvestmentDeactivatedEvent
+import com.pawelcz.investment_cqrs.command.api.events.ProfitCalculatedEvent
 import com.pawelcz.investment_cqrs.command.api.events.NewInvestmentRegisteredEvent
 import com.pawelcz.investment_cqrs.command.api.value_objects.Money
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.*
@@ -16,7 +17,6 @@ import org.axonframework.modelling.command.AggregateIdentifier
 import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.spring.stereotype.Aggregate
 import java.time.LocalDate
-import javax.persistence.criteria.CriteriaBuilder.In
 
 @Aggregate
 class Investment {
@@ -64,7 +64,7 @@ class Investment {
         this.investmentId = investmentDeactivatedEvent.investmentId
         this.status = investmentDeactivatedEvent.status
     }
-
+/*
     @CommandHandler
     fun handle(registerInvestmentCommand: RegisterInvestmentCommand){
         if(!this.amountRange.isBetween(registerInvestmentCommand.amount))
@@ -93,6 +93,8 @@ class Investment {
         AggregateLifecycle.apply(newInvestmentRegisteredEvent)
     }
 
+
+ */
     @EventSourcingHandler
     fun on(newInvestmentRegisteredEvent: NewInvestmentRegisteredEvent){
         this.investmentId = newInvestmentRegisteredEvent.investmentId
@@ -109,6 +111,42 @@ class Investment {
                 newInvestmentRegisteredEvent.walletId
             )
         )
+    }
+
+    @CommandHandler
+    fun handle(calculateProfitCommand: CalculateProfitCommand){
+        if(!this.amountRange.isBetween(calculateProfitCommand.amount))
+            throw IllegalArgumentException("Amount doesn't match the range")
+        if(!this.availableCapitalizationPeriods.capitalizationPeriods
+                .containsKey(calculateProfitCommand.capitalizationPeriod))
+            throw IllegalArgumentException("Such capitalization period isn't available")
+        val profitCalculatedEvent = ProfitCalculatedEvent(
+            calculateProfitCommand.investorId,
+            calculateProfitCommand.investmentId,
+            calculateProfitCommand.registeredInvestmentId,
+            Money(calculateProfitCommand.amount, this.amountRange.maximumAmount.currency),
+            this.availableCapitalizationPeriods.capitalizationPeriods[calculateProfitCommand.capitalizationPeriod]!!,
+            calculateProfitCommand.investmentTarget,
+            calculateProfitCommand.capitalizationPeriod,
+            InvestmentPeriod(
+                LocalDate.now(),
+                LocalDate.now().plusMonths(calculateProfitCommand.periodInMonths.toLong())
+            ),
+            Money(
+                ProfitCalculator.profitCalculation(calculateProfitCommand.amount,
+                this.availableCapitalizationPeriods.
+                capitalizationPeriods[calculateProfitCommand.capitalizationPeriod]!!,
+                calculateProfitCommand.capitalizationPeriod,
+                calculateProfitCommand.periodInMonths), this.amountRange.maximumAmount.currency
+            ),
+            calculateProfitCommand.walletId
+        )
+        AggregateLifecycle.apply(profitCalculatedEvent)
+    }
+
+    @EventSourcingHandler
+    fun on(profitCalculatedEvent: ProfitCalculatedEvent){
+
     }
 
     constructor()
