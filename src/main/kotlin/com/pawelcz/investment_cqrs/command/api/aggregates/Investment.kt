@@ -2,12 +2,9 @@ package com.pawelcz.investment_cqrs.command.api.aggregates
 
 import com.pawelcz.investment_cqrs.command.api.commands.CreateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.DeactivateInvestmentCommand
-import com.pawelcz.investment_cqrs.command.api.commands.CalculateProfitCommand
-import com.pawelcz.investment_cqrs.command.api.entities.investment_entities.RegisteredInvestment
-import com.pawelcz.investment_cqrs.command.api.events.InvestmentCreatedEvent
-import com.pawelcz.investment_cqrs.command.api.events.InvestmentDeactivatedEvent
-import com.pawelcz.investment_cqrs.command.api.events.ProfitCalculatedEvent
-import com.pawelcz.investment_cqrs.command.api.events.NewInvestmentRegisteredEvent
+import com.pawelcz.investment_cqrs.command.api.commands.InitiallyRegisterNewInvestmentCommand
+import com.pawelcz.investment_cqrs.command.api.commands.RemoveInvestmentRegistrationCommand
+import com.pawelcz.investment_cqrs.command.api.events.*
 import com.pawelcz.investment_cqrs.command.api.value_objects.Money
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.*
 import com.pawelcz.investment_cqrs.core.api.util.ProfitCalculator
@@ -17,15 +14,16 @@ import org.axonframework.modelling.command.AggregateIdentifier
 import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.spring.stereotype.Aggregate
 import java.time.LocalDate
+import kotlin.properties.Delegates
 
 @Aggregate
 class Investment {
     @AggregateIdentifier
-    private lateinit var investmentId: InvestmentId
-    private lateinit var amountRange: AmountRange
-    private lateinit var availableCapitalizationPeriods: AvailableCapitalizationPeriods
-    private lateinit var status: Status
-    private lateinit var registeredInvestments: List<RegisteredInvestment>
+    lateinit var investmentId: InvestmentId
+    lateinit var amountRange: AmountRange
+    lateinit var availableCapitalizationPeriods: AvailableCapitalizationPeriods
+    lateinit var status: Status
+    var totalOfRegisteredInvestments by Delegates.notNull<Int>()
 
 
     @CommandHandler
@@ -45,7 +43,7 @@ class Investment {
         this.amountRange = investmentCreatedEvent.amountRange
         this.availableCapitalizationPeriods = investmentCreatedEvent.availableCapitalizationPeriods
         this.status = investmentCreatedEvent.status
-        this.registeredInvestments = mutableListOf()
+        this.totalOfRegisteredInvestments = 0
     }
 
     @CommandHandler
@@ -64,89 +62,57 @@ class Investment {
         this.investmentId = investmentDeactivatedEvent.investmentId
         this.status = investmentDeactivatedEvent.status
     }
-/*
-    @CommandHandler
-    fun handle(registerInvestmentCommand: RegisterInvestmentCommand){
-        if(!this.amountRange.isBetween(registerInvestmentCommand.amount))
-            throw IllegalArgumentException("Amount doesn't match the range")
-        if(!this.availableCapitalizationPeriods.capitalizationPeriods
-                .containsKey(registerInvestmentCommand.capitalizationPeriod))
-            throw IllegalArgumentException("Such capitalization period isn't available")
-        val newInvestmentRegisteredEvent = NewInvestmentRegisteredEvent(
-            registerInvestmentCommand.investmentId,
-            registerInvestmentCommand.registeredInvestmentId,
-            Money(registerInvestmentCommand.amount, this.amountRange.maximumAmount.currency),
-            this.availableCapitalizationPeriods.capitalizationPeriods[registerInvestmentCommand.capitalizationPeriod]!!,
-            registerInvestmentCommand.investmentTarget,
-            registerInvestmentCommand.capitalizationPeriod,
-            InvestmentPeriod(
-                LocalDate.now(),
-                LocalDate.now().plusMonths(registerInvestmentCommand.periodInMonths.toLong())
-            ),
-            Money(ProfitCalculator.profitCalculation(registerInvestmentCommand.amount,
-                this.availableCapitalizationPeriods.
-                capitalizationPeriods[registerInvestmentCommand.capitalizationPeriod]!!,
-                registerInvestmentCommand.capitalizationPeriod,
-                registerInvestmentCommand.periodInMonths), this.amountRange.maximumAmount.currency),
-            registerInvestmentCommand.walletId
-        )
-        AggregateLifecycle.apply(newInvestmentRegisteredEvent)
-    }
 
 
- */
-    @EventSourcingHandler
-    fun on(newInvestmentRegisteredEvent: NewInvestmentRegisteredEvent){
-        this.investmentId = newInvestmentRegisteredEvent.investmentId
-        this.registeredInvestments = registeredInvestments.plus(
-            RegisteredInvestment(
-                newInvestmentRegisteredEvent.registeredInvestmentId,
-                newInvestmentRegisteredEvent.amount,
-                newInvestmentRegisteredEvent.investmentTarget,
-                newInvestmentRegisteredEvent.capitalizationPeriod,
-                newInvestmentRegisteredEvent.annualInterestRate,
-                newInvestmentRegisteredEvent.investmentPeriod,
-                newInvestmentRegisteredEvent.profit,
-                newInvestmentRegisteredEvent.investmentId,
-                newInvestmentRegisteredEvent.walletId
-            )
-        )
-    }
+
 
     @CommandHandler
-    fun handle(calculateProfitCommand: CalculateProfitCommand){
-        if(!this.amountRange.isBetween(calculateProfitCommand.amount))
+    fun handle(initiallyRegisterNewInvestmentCommand: InitiallyRegisterNewInvestmentCommand){
+        if(!this.amountRange.isBetween(initiallyRegisterNewInvestmentCommand.amount))
             throw IllegalArgumentException("Amount doesn't match the range")
         if(!this.availableCapitalizationPeriods.capitalizationPeriods
-                .containsKey(calculateProfitCommand.capitalizationPeriod))
+                .containsKey(initiallyRegisterNewInvestmentCommand.capitalizationPeriod))
             throw IllegalArgumentException("Such capitalization period isn't available")
-        val profitCalculatedEvent = ProfitCalculatedEvent(
-            calculateProfitCommand.investorId,
-            calculateProfitCommand.investmentId,
-            calculateProfitCommand.registeredInvestmentId,
-            Money(calculateProfitCommand.amount, this.amountRange.maximumAmount.currency),
-            this.availableCapitalizationPeriods.capitalizationPeriods[calculateProfitCommand.capitalizationPeriod]!!,
-            calculateProfitCommand.investmentTarget,
-            calculateProfitCommand.capitalizationPeriod,
+        val newInvestmentInitiallyRegisteredEvent = NewInvestmentInitiallyRegisteredEvent(
+            initiallyRegisterNewInvestmentCommand.investorId,
+            initiallyRegisterNewInvestmentCommand.investmentId,
+            initiallyRegisterNewInvestmentCommand.registeredInvestmentId,
+            Money(initiallyRegisterNewInvestmentCommand.amount, this.amountRange.maximumAmount.currency),
+            this.availableCapitalizationPeriods.capitalizationPeriods[initiallyRegisterNewInvestmentCommand.capitalizationPeriod]!!,
+            initiallyRegisterNewInvestmentCommand.investmentTarget,
+            initiallyRegisterNewInvestmentCommand.capitalizationPeriod,
             InvestmentPeriod(
                 LocalDate.now(),
-                LocalDate.now().plusMonths(calculateProfitCommand.periodInMonths.toLong())
+                LocalDate.now().plusMonths(initiallyRegisterNewInvestmentCommand.periodInMonths.toLong())
             ),
             Money(
-                ProfitCalculator.profitCalculation(calculateProfitCommand.amount,
+                ProfitCalculator.profitCalculation(initiallyRegisterNewInvestmentCommand.amount,
                 this.availableCapitalizationPeriods.
-                capitalizationPeriods[calculateProfitCommand.capitalizationPeriod]!!,
-                calculateProfitCommand.capitalizationPeriod,
-                calculateProfitCommand.periodInMonths), this.amountRange.maximumAmount.currency
+                capitalizationPeriods[initiallyRegisterNewInvestmentCommand.capitalizationPeriod]!!,
+                initiallyRegisterNewInvestmentCommand.capitalizationPeriod,
+                initiallyRegisterNewInvestmentCommand.periodInMonths), this.amountRange.maximumAmount.currency
             ),
-            calculateProfitCommand.walletId
+            initiallyRegisterNewInvestmentCommand.walletId
         )
-        AggregateLifecycle.apply(profitCalculatedEvent)
+        AggregateLifecycle.apply(newInvestmentInitiallyRegisteredEvent)
     }
 
     @EventSourcingHandler
-    fun on(profitCalculatedEvent: ProfitCalculatedEvent){
+    fun on(newInvestmentInitiallyRegisteredEvent: NewInvestmentInitiallyRegisteredEvent){
+        this.totalOfRegisteredInvestments++
+    }
 
+    @CommandHandler
+    fun handle(removeInvestmentRegistrationCommand: RemoveInvestmentRegistrationCommand){
+        val investmentRegistrationRemovedEvent = InvestmentRegistrationRemovedEvent(
+            removeInvestmentRegistrationCommand.investmentId
+        )
+        AggregateLifecycle.apply(investmentRegistrationRemovedEvent)
+    }
+
+    @EventSourcingHandler
+    fun on(investmentRegistrationRemovedEvent: InvestmentRegistrationRemovedEvent){
+        this.totalOfRegisteredInvestments--
     }
 
     constructor()

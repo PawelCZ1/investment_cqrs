@@ -1,8 +1,8 @@
 package com.pawelcz.investment_cqrs.core.api.services
 
+import com.pawelcz.investment_cqrs.command.api.commands.InitiallyRegisterNewInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.CreateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.DeactivateInvestmentCommand
-import com.pawelcz.investment_cqrs.command.api.commands.RegisterInvestmentCommand
 
 import com.pawelcz.investment_cqrs.command.api.value_objects.Money
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AmountRange
@@ -18,7 +18,6 @@ import com.pawelcz.investment_cqrs.core.api.dto.RegisterNewInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.util.MapConverter
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllInvestmentsQuery
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllRegisteredInvestmentsQuery
-import com.pawelcz.investment_cqrs.query.api.repositories.InvestmentEntityRepository
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.messaging.responsetypes.ResponseTypes
 import org.axonframework.queryhandling.QueryGateway
@@ -54,10 +53,10 @@ class InvestmentService(
                 ResponseTypes.multipleInstancesOf(GetAllInvestmentsDTO::class.java)).join()
     }
 
-    fun registerNewInvestment(registerNewInvestmentDTO: RegisterNewInvestmentDTO): InvestmentId? {
-        val registerInvestmentCommand = RegisterInvestmentCommand(
-            InvestorId(registerNewInvestmentDTO.investorId),
+    fun calculateProfit(registerNewInvestmentDTO: RegisterNewInvestmentDTO): InvestmentId? {
+        val initiallyRegisterNewInvestmentCommand = InitiallyRegisterNewInvestmentCommand(
             InvestmentId(registerNewInvestmentDTO.investmentId),
+            InvestorId(registerNewInvestmentDTO.investorId),
             RegisteredInvestmentId.generateRegisteredInvestmentId(),
             registerNewInvestmentDTO.amount,
             registerNewInvestmentDTO.investmentTarget,
@@ -66,7 +65,7 @@ class InvestmentService(
             WalletId(registerNewInvestmentDTO.walletId)
         )
 
-        return commandGateway.sendAndWait(registerInvestmentCommand)
+        return commandGateway.sendAndWait(initiallyRegisterNewInvestmentCommand)
     }
 
     fun getAllRegisteredInvestments(): List<GetAllRegisteredInvestmentsDTO>{

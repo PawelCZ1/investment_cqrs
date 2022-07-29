@@ -30,7 +30,7 @@ class InvestmentController(
 
     @PostMapping("/registered")
     fun registerNewInvestment(@RequestBody registerNewInvestmentDTO: RegisterNewInvestmentDTO)
-    = investmentService.registerNewInvestment(registerNewInvestmentDTO)
+    = investmentService.calculateProfit(registerNewInvestmentDTO)
 
     @GetMapping("/registered")
     fun getAllRegisteredInvestments() = investmentService.getAllRegisteredInvestments()

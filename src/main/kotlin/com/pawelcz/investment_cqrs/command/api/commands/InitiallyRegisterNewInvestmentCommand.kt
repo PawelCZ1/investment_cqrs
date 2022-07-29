@@ -6,7 +6,7 @@ import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_obje
 import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects.WalletId
 import org.axonframework.modelling.command.TargetAggregateIdentifier
 
-data class CalculateProfitCommand(
+data class InitiallyRegisterNewInvestmentCommand(
     @TargetAggregateIdentifier
     val investmentId: InvestmentId,
     val investorId: InvestorId,
@@ -17,3 +17,4 @@ data class CalculateProfitCommand(
     val periodInMonths: String,
     val walletId: WalletId
 )
+
