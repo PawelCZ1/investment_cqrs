@@ -27,8 +27,6 @@ class Investor {
     private lateinit var personalData: PersonalData
     @AggregateMember(routingKey = "walletId")
     private lateinit var wallets: List<Wallet>
-    @AggregateMember(routingKey = "registeredInvestmentId")
-    private lateinit var registeredInvestments: List<RegisteredInvestment>
     @Autowired
     private lateinit var investmentReader: InvestmentReader
     @CommandHandler
@@ -46,7 +44,6 @@ class Investor {
         this.investorId = investorRegisteredEvent.investorId
         this.personalData = investorRegisteredEvent.personalData
         this.wallets = mutableListOf()
-        this.registeredInvestments = mutableListOf()
     }
 
     @CommandHandler
@@ -64,54 +61,14 @@ class Investor {
         this.investorId = walletCreatedEvent.investorId
         val wallet = Wallet(
             walletCreatedEvent.walletId,
-            walletCreatedEvent.name
+            walletCreatedEvent.name,
+            investmentReader,
+            mutableListOf()
         )
         this.wallets = wallets.plus(wallet)
     }
 
-    @CommandHandler
-    fun handle(registerInvestmentCommand: RegisterInvestmentCommand){
-        val investment = investmentReader.loadInvestment(registerInvestmentCommand.investmentId)
-        val investmentRegisteredEvent = InvestmentRegisteredEvent(
-            registerInvestmentCommand.investorId,
-            registerInvestmentCommand.investmentId,
-            registerInvestmentCommand.registeredInvestmentId,
-            registerInvestmentCommand.walletId,
-            Money(registerInvestmentCommand.amount, investment.amountRange.maximumAmount.currency),
-            investment.availableCapitalizationPeriods
-                .capitalizationPeriods[registerInvestmentCommand.capitalizationPeriod]!!,
-            registerInvestmentCommand.investmentTarget,
-            registerInvestmentCommand.capitalizationPeriod,
-            InvestmentPeriod(LocalDate.now(), LocalDate.now()
-                .plusMonths(registerInvestmentCommand.periodInMonths.toLong())),
-            Money(
-                ProfitCalculator.profitCalculation(registerInvestmentCommand.amount,
-                    investment.availableCapitalizationPeriods
-                        .capitalizationPeriods[registerInvestmentCommand.capitalizationPeriod]!!,
-                    registerInvestmentCommand.capitalizationPeriod,
-                    registerInvestmentCommand.periodInMonths),
-                investment.amountRange.maximumAmount.currency
-            )
-        )
-        AggregateLifecycle.apply(investmentRegisteredEvent)
-    }
 
-    @EventSourcingHandler
-    fun on(investmentRegisteredEvent: InvestmentRegisteredEvent){
-        this.registeredInvestments.plus(
-            RegisteredInvestment(
-                investmentRegisteredEvent.registeredInvestmentId,
-                investmentRegisteredEvent.amount,
-                investmentRegisteredEvent.investmentTarget,
-                investmentRegisteredEvent.capitalizationPeriod,
-                investmentRegisteredEvent.annualInterestRate,
-                investmentRegisteredEvent.investmentPeriod,
-                investmentRegisteredEvent.profit,
-                investmentRegisteredEvent.investmentId,
-                investmentRegisteredEvent.walletId
-            )
-        )
-    }
 
 
 

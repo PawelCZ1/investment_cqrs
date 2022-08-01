@@ -27,11 +27,11 @@ class InvestorController(private val investorService: InvestorService) {
     @GetMapping("/wallets")
     fun getAllWallets() = investorService.getAllWallets()
 
-    @PostMapping("/register")
+    @PostMapping("/investment/register")
     fun registerInvestment(@RequestBody registerInvestmentDTO: RegisterInvestmentDTO)
     = investorService.registerInvestment(registerInvestmentDTO)
 
-    @GetMapping("/registered")
+    @GetMapping("/investment/registered")
     fun getAllRegisteredInvestments() = investorService.getAllRegisteredInvestments()
 
 }
