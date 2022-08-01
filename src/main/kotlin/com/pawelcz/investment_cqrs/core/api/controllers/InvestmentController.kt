@@ -1,7 +1,6 @@
 package com.pawelcz.investment_cqrs.core.api.controllers
 
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
-import com.pawelcz.investment_cqrs.core.api.dto.RegisterNewInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.services.InvestmentService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -27,13 +26,5 @@ class InvestmentController(
 
     @GetMapping
     fun getAllInvestments() = investmentService.getAllInvestments()
-
-    @PostMapping("/registered")
-    fun registerNewInvestment(@RequestBody registerNewInvestmentDTO: RegisterNewInvestmentDTO)
-    = investmentService.calculateProfit(registerNewInvestmentDTO)
-
-    @GetMapping("/registered")
-    fun getAllRegisteredInvestments() = investmentService.getAllRegisteredInvestments()
-
 
 }

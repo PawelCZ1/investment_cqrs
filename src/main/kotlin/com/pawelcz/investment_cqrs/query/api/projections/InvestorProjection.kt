@@ -2,7 +2,6 @@ package com.pawelcz.investment_cqrs.query.api.projections
 
 import com.pawelcz.investment_cqrs.core.api.dto.GetAllInvestorsDTO
 import com.pawelcz.investment_cqrs.core.api.dto.GetAllWalletsDTO
-import com.pawelcz.investment_cqrs.core.api.dto.RegisterNewInvestorDTO
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllInvestorsQuery
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllWalletsQuery
 import com.pawelcz.investment_cqrs.query.api.repositories.InvestorEntityRepository

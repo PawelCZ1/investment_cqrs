@@ -2,8 +2,6 @@ package com.pawelcz.investment_cqrs.command.api.aggregates
 
 import com.pawelcz.investment_cqrs.command.api.commands.CreateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.DeactivateInvestmentCommand
-import com.pawelcz.investment_cqrs.command.api.commands.InitiallyRegisterNewInvestmentCommand
-import com.pawelcz.investment_cqrs.command.api.commands.RemoveInvestmentRegistrationCommand
 import com.pawelcz.investment_cqrs.command.api.events.*
 import com.pawelcz.investment_cqrs.command.api.value_objects.Money
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.*
@@ -19,11 +17,10 @@ import kotlin.properties.Delegates
 @Aggregate
 class Investment {
     @AggregateIdentifier
-    lateinit var investmentId: InvestmentId
+    lateinit var investmentId: String
     lateinit var amountRange: AmountRange
     lateinit var availableCapitalizationPeriods: AvailableCapitalizationPeriods
     lateinit var status: Status
-    var totalOfRegisteredInvestments by Delegates.notNull<Int>()
 
 
     @CommandHandler
@@ -43,7 +40,6 @@ class Investment {
         this.amountRange = investmentCreatedEvent.amountRange
         this.availableCapitalizationPeriods = investmentCreatedEvent.availableCapitalizationPeriods
         this.status = investmentCreatedEvent.status
-        this.totalOfRegisteredInvestments = 0
     }
 
     @CommandHandler
@@ -61,58 +57,6 @@ class Investment {
     fun on(investmentDeactivatedEvent: InvestmentDeactivatedEvent){
         this.investmentId = investmentDeactivatedEvent.investmentId
         this.status = investmentDeactivatedEvent.status
-    }
-
-
-
-
-    @CommandHandler
-    fun handle(initiallyRegisterNewInvestmentCommand: InitiallyRegisterNewInvestmentCommand){
-        if(!this.amountRange.isBetween(initiallyRegisterNewInvestmentCommand.amount))
-            throw IllegalArgumentException("Amount doesn't match the range")
-        if(!this.availableCapitalizationPeriods.capitalizationPeriods
-                .containsKey(initiallyRegisterNewInvestmentCommand.capitalizationPeriod))
-            throw IllegalArgumentException("Such capitalization period isn't available")
-        val newInvestmentInitiallyRegisteredEvent = NewInvestmentInitiallyRegisteredEvent(
-            initiallyRegisterNewInvestmentCommand.investorId,
-            initiallyRegisterNewInvestmentCommand.investmentId,
-            initiallyRegisterNewInvestmentCommand.registeredInvestmentId,
-            Money(initiallyRegisterNewInvestmentCommand.amount, this.amountRange.maximumAmount.currency),
-            this.availableCapitalizationPeriods.capitalizationPeriods[initiallyRegisterNewInvestmentCommand.capitalizationPeriod]!!,
-            initiallyRegisterNewInvestmentCommand.investmentTarget,
-            initiallyRegisterNewInvestmentCommand.capitalizationPeriod,
-            InvestmentPeriod(
-                LocalDate.now(),
-                LocalDate.now().plusMonths(initiallyRegisterNewInvestmentCommand.periodInMonths.toLong())
-            ),
-            Money(
-                ProfitCalculator.profitCalculation(initiallyRegisterNewInvestmentCommand.amount,
-                this.availableCapitalizationPeriods.
-                capitalizationPeriods[initiallyRegisterNewInvestmentCommand.capitalizationPeriod]!!,
-                initiallyRegisterNewInvestmentCommand.capitalizationPeriod,
-                initiallyRegisterNewInvestmentCommand.periodInMonths), this.amountRange.maximumAmount.currency
-            ),
-            initiallyRegisterNewInvestmentCommand.walletId
-        )
-        AggregateLifecycle.apply(newInvestmentInitiallyRegisteredEvent)
-    }
-
-    @EventSourcingHandler
-    fun on(newInvestmentInitiallyRegisteredEvent: NewInvestmentInitiallyRegisteredEvent){
-        this.totalOfRegisteredInvestments++
-    }
-
-    @CommandHandler
-    fun handle(removeInvestmentRegistrationCommand: RemoveInvestmentRegistrationCommand){
-        val investmentRegistrationRemovedEvent = InvestmentRegistrationRemovedEvent(
-            removeInvestmentRegistrationCommand.investmentId
-        )
-        AggregateLifecycle.apply(investmentRegistrationRemovedEvent)
-    }
-
-    @EventSourcingHandler
-    fun on(investmentRegistrationRemovedEvent: InvestmentRegistrationRemovedEvent){
-        this.totalOfRegisteredInvestments--
     }
 
     constructor()

@@ -1,8 +1,6 @@
 package com.pawelcz.investment_cqrs.query.api.entities
 
 import com.pawelcz.investment_cqrs.command.api.value_objects.Currency
-import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.RegisteredInvestmentId
-import java.math.BigDecimal
 import java.time.LocalDate
 import javax.persistence.*
 
