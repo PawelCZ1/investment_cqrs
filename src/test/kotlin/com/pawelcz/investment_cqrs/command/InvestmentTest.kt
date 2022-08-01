@@ -5,7 +5,13 @@ import com.pawelcz.investment_cqrs.command.api.commands.CreateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.DeactivateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.events.InvestmentCreatedEvent
 import com.pawelcz.investment_cqrs.command.api.events.InvestmentDeactivatedEvent
+import com.pawelcz.investment_cqrs.command.api.value_objects.Currency
+import com.pawelcz.investment_cqrs.command.api.value_objects.Money
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AmountRange
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AvailableCapitalizationPeriods
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.Status
 import org.axonframework.test.aggregate.AggregateTestFixture
+import org.checkerframework.checker.units.qual.C
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -23,20 +29,21 @@ class InvestmentTest {
     fun `create new investment command test`(){
         fixture.`when`(CreateInvestmentCommand(
             "aaa",
-            "bbb",
-            100.0,
-            10000.0,
-            mapOf("3" to 3.0, "6" to 4.0, "12" to 4.5),
-            LocalDate.parse("2023-04-15")
-        )).expectSuccessfulHandlerExecution()
+            AmountRange(
+                Money(1.0,Currency.EURO),
+                Money(100.0, Currency.EURO)
+            ),
+            AvailableCapitalizationPeriods(mapOf("3" to 3.0, "6" to 4.0, "12" to 4.5))
+            )
+        ).expectSuccessfulHandlerExecution()
             .expectEvents(InvestmentCreatedEvent(
                 "aaa",
-                "bbb",
-                100.0,
-                10000.0,
-                mapOf("3" to 3.0, "6" to 4.0, "12" to 4.5),
-                LocalDate.parse("2023-04-15"),
-                true
+                AmountRange(
+                    Money(1.0,Currency.EURO),
+                    Money(100.0, Currency.EURO)
+                ),
+                AvailableCapitalizationPeriods(mapOf("3" to 3.0, "6" to 4.0, "12" to 4.5)),
+                Status.ACTIVE
             ))
     }
 
@@ -44,19 +51,18 @@ class InvestmentTest {
     fun `deactivate investment command test`(){
         fixture.given(InvestmentCreatedEvent(
             "aaa",
-            "bbb",
-            100.0,
-            10000.0,
-            mapOf("3" to 3.0, "6" to 4.0, "12" to 4.5),
-            LocalDate.parse("2023-04-15"),
-            true
+            AmountRange(
+                Money(1.0,Currency.EURO),
+                Money(100.0, Currency.EURO)
+            ),
+            AvailableCapitalizationPeriods(mapOf("3" to 3.0, "6" to 4.0, "12" to 4.5)),
+            Status.ACTIVE
         )).`when`(DeactivateInvestmentCommand(
             "aaa"
         )).expectSuccessfulHandlerExecution()
             .expectEvents(InvestmentDeactivatedEvent(
                 "aaa",
-                LocalDate.now(),
-                false
+                Status.INACTIVE
             ))
     }
 
@@ -64,14 +70,19 @@ class InvestmentTest {
     fun `deactivate investment command should throw illegal argument exception`(){
         fixture.given(InvestmentCreatedEvent(
             "aaa",
-            "bbb",
-            100.0,
-            10000.0,
-            mapOf("3" to 3.0, "6" to 4.0, "12" to 4.5),
-            LocalDate.parse("2021-04-15"),
-            false
+            AmountRange(
+                Money(1.0,Currency.EURO),
+                Money(100.0, Currency.EURO)
+            ),
+            AvailableCapitalizationPeriods(mapOf("3" to 3.0, "6" to 4.0, "12" to 4.5)),
+            Status.ACTIVE
+        ),InvestmentDeactivatedEvent(
+            "aaa",
+            Status.INACTIVE
         )).`when`(DeactivateInvestmentCommand(
             "aaa"
-        )).expectSuccessfulHandlerExecution().expectException(IllegalArgumentException::class.java)
+        )).expectExceptionMessage("This investment is already inactive")
     }
+
+
 }
