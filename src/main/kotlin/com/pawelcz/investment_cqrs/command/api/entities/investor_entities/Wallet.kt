@@ -20,13 +20,12 @@ class Wallet(
     @EntityId
     val walletId: String,
     val name: String,
-    val investmentReader: InvestmentReader,
     @AggregateMember(routingKey = "registeredInvestmentId")
     private val registeredInvestments: List<RegisteredInvestment>
     ) {
 
     @CommandHandler
-    fun handle(registerInvestmentCommand: RegisterInvestmentCommand){
+    fun handle(registerInvestmentCommand: RegisterInvestmentCommand, investmentReader: InvestmentReader){
         val investment = investmentReader.loadInvestment(registerInvestmentCommand.investmentId)
         if(!investment.amountRange.isBetween(registerInvestmentCommand.amount))
             throw IllegalArgumentException("This amount doesn't match required range")

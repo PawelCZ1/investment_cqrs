@@ -27,8 +27,6 @@ class Investor {
     private lateinit var personalData: PersonalData
     @AggregateMember(routingKey = "walletId")
     private lateinit var wallets: List<Wallet>
-    @Autowired
-    private lateinit var investmentReader: InvestmentReader
     @CommandHandler
     constructor(registerInvestorCommand: RegisterInvestorCommand){
         val investorRegisteredEvent = InvestorRegisteredEvent(
@@ -62,7 +60,6 @@ class Investor {
         val wallet = Wallet(
             walletCreatedEvent.walletId,
             walletCreatedEvent.name,
-            investmentReader,
             mutableListOf()
         )
         this.wallets = wallets.plus(wallet)

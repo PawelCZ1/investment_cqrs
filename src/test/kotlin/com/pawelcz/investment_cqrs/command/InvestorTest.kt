@@ -1,17 +1,33 @@
 package com.pawelcz.investment_cqrs.command
 
+import com.pawelcz.investment_cqrs.command.api.aggregate_readers.InvestmentReader
+import com.pawelcz.investment_cqrs.command.api.aggregates.Investment
 import com.pawelcz.investment_cqrs.command.api.aggregates.Investor
+import com.pawelcz.investment_cqrs.command.api.commands.CreateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.CreateWalletCommand
+import com.pawelcz.investment_cqrs.command.api.commands.RegisterInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.RegisterInvestorCommand
+import com.pawelcz.investment_cqrs.command.api.events.InvestmentCreatedEvent
+import com.pawelcz.investment_cqrs.command.api.events.InvestmentRegisteredEvent
 import com.pawelcz.investment_cqrs.command.api.events.InvestorRegisteredEvent
 import com.pawelcz.investment_cqrs.command.api.events.WalletCreatedEvent
+import com.pawelcz.investment_cqrs.command.api.value_objects.Currency
+import com.pawelcz.investment_cqrs.command.api.value_objects.Money
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AmountRange
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AvailableCapitalizationPeriods
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.InvestmentPeriod
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.Status
 import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects.PersonalData
+import io.mockk.every
+import io.mockk.mockk
+import org.axonframework.eventsourcing.EventSourcingRepository
 import org.axonframework.test.aggregate.AggregateTestFixture
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
+import javax.persistence.criteria.CriteriaBuilder.In
 
 class InvestorTest {
 
@@ -19,7 +35,22 @@ class InvestorTest {
 
     @BeforeEach
     internal fun setUp() {
-        fixture = AggregateTestFixture(Investor::class.java)
+        val investmentReader = mockk<InvestmentReader>()
+        fixture = AggregateTestFixture(Investor::class.java).apply {
+            setReportIllegalStateChange(false)
+            registerInjectableResource(investmentReader.apply {
+                every { loadInvestment(any()) } returns mockk<Investment>().apply {
+                    every { investmentId } returns "ggg"
+                    every { availableCapitalizationPeriods }returns
+                            AvailableCapitalizationPeriods(mapOf("3m" to 3.0, "6m" to 4.0, "12m" to 4.5))
+                    every { amountRange } returns AmountRange(
+                        Money(1.0, Currency.EURO),
+                        Money(100.0, Currency.EURO)
+                    )
+                    every { status } returns Status.ACTIVE
+                }
+            })
+        }
     }
 
     @Test
@@ -43,7 +74,7 @@ class InvestorTest {
     }
 
     @Test
-    fun `too young to be registered as investor illegal argument exception`(){
+    fun `too young to be registered as investor illegal argument exception test`(){
         // when
         val exception = assertThrows<IllegalArgumentException> {
             fixture.`when`(RegisterInvestorCommand(
@@ -83,7 +114,67 @@ class InvestorTest {
             "ddd",
             "test"
         )).expectSuccessfulHandlerExecution()
+            .expectEvents(WalletCreatedEvent(
+                "ddd",
+                "test",
+                "aaa"
+            ))
+    }
 
+    @Test
+    fun `aggregate not found in event store exception test`(){
+        // when
+        val exception = assertThrows<AssertionError> {
+            fixture.given(InvestorRegisteredEvent(
+                "aaa",
+                PersonalData(
+                    "bbb",
+                    "ccc",
+                    LocalDate.parse("2000-01-05")
+                )
+            )).`when`(CreateWalletCommand(
+                "zzz",
+                "ddd",
+                "test"
+            )).expectSuccessfulHandlerExecution()
+                .expectEvents(WalletCreatedEvent(
+                    "ddd",
+                    "test",
+                    "zzz"
+                ))
+
+        }
+        val expected = exception.message
+        val actual = "The aggregate used in this fixture was initialized with an identifier different than the one" +
+                " used to load it. Loaded [zzz], but actual identifier is [aaa].\n" +
+                "Make sure the identifier passed in the Command matches that of the given Events."
+        // then
+        assertEquals(actual,expected)
+    }
+
+    @Test
+    fun `register investment test`(){
+        fixture.given(InvestorRegisteredEvent(
+            "aaa",
+            PersonalData(
+                "bbb",
+                "ccc",
+                LocalDate.parse("2000-01-05")
+            )
+        ), WalletCreatedEvent(
+            "ddd",
+            "test",
+            "aaa"
+        )).`when`(RegisterInvestmentCommand(
+            "aaa",
+            "ggg",
+            "zzz",
+            "ddd",
+            50.0,
+            "bike",
+            "3m",
+            "10"
+        )).expectSuccessfulHandlerExecution()
     }
 }
 
