@@ -3,33 +3,27 @@ package com.pawelcz.investment_cqrs.command
 import com.pawelcz.investment_cqrs.command.api.aggregate_readers.InvestmentReader
 import com.pawelcz.investment_cqrs.command.api.aggregates.Investment
 import com.pawelcz.investment_cqrs.command.api.aggregates.Investor
-import com.pawelcz.investment_cqrs.command.api.commands.CreateInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.CreateWalletCommand
 import com.pawelcz.investment_cqrs.command.api.commands.RegisterInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.RegisterInvestorCommand
-import com.pawelcz.investment_cqrs.command.api.events.InvestmentCreatedEvent
-import com.pawelcz.investment_cqrs.command.api.events.InvestmentRegisteredEvent
 import com.pawelcz.investment_cqrs.command.api.events.InvestorRegisteredEvent
 import com.pawelcz.investment_cqrs.command.api.events.WalletCreatedEvent
 import com.pawelcz.investment_cqrs.command.api.value_objects.Currency
 import com.pawelcz.investment_cqrs.command.api.value_objects.Money
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AmountRange
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AvailableCapitalizationPeriods
-import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.InvestmentPeriod
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.Status
 import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects.PersonalData
 import io.mockk.every
 import io.mockk.mockk
-import org.axonframework.eventsourcing.EventSourcingRepository
 import org.axonframework.test.aggregate.AggregateTestFixture
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
-import javax.persistence.criteria.CriteriaBuilder.In
 
-class InvestorTest {
+class InvestorAggregateTest {
 
     private lateinit var fixture: AggregateTestFixture<Investor>
 

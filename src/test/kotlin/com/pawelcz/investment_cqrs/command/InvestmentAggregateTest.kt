@@ -11,12 +11,10 @@ import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_ob
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AvailableCapitalizationPeriods
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.Status
 import org.axonframework.test.aggregate.AggregateTestFixture
-import org.checkerframework.checker.units.qual.C
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 
-class InvestmentTest {
+class InvestmentAggregateTest {
 
     private lateinit var fixture: AggregateTestFixture<Investment>
 
