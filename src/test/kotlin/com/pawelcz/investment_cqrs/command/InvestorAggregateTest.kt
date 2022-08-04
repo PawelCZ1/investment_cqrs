@@ -6,14 +6,17 @@ import com.pawelcz.investment_cqrs.command.api.aggregates.Investor
 import com.pawelcz.investment_cqrs.command.api.commands.CreateWalletCommand
 import com.pawelcz.investment_cqrs.command.api.commands.RegisterInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.RegisterInvestorCommand
+import com.pawelcz.investment_cqrs.command.api.events.InvestmentRegisteredEvent
 import com.pawelcz.investment_cqrs.command.api.events.InvestorRegisteredEvent
 import com.pawelcz.investment_cqrs.command.api.events.WalletCreatedEvent
 import com.pawelcz.investment_cqrs.command.api.value_objects.Currency
 import com.pawelcz.investment_cqrs.command.api.value_objects.Money
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AmountRange
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AvailableCapitalizationPeriods
+import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.InvestmentPeriod
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.Status
 import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects.PersonalData
+import com.pawelcz.investment_cqrs.core.api.util.ProfitCalculator
 import io.mockk.every
 import io.mockk.mockk
 import org.axonframework.test.aggregate.AggregateTestFixture
@@ -169,6 +172,20 @@ class InvestorAggregateTest {
             "3m",
             "10"
         )).expectSuccessfulHandlerExecution()
+            .expectEvents(InvestmentRegisteredEvent(
+                "aaa",
+                "ggg",
+                "zzz",
+                "ddd",
+                Money(50.0, Currency.EURO),
+                3.0,
+                "bike",
+                "3m",
+                InvestmentPeriod(LocalDate.now(), LocalDate.now().plusMonths(10)),
+                Money(ProfitCalculator
+                    .profitCalculation(50.0,3.0,"3m","10"),
+                    Currency.EURO)
+            ))
     }
 }
 
