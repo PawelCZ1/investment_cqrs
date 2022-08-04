@@ -6,6 +6,7 @@ import com.pawelcz.investment_cqrs.command.api.events.InvestmentRegisteredEvent
 import com.pawelcz.investment_cqrs.command.api.value_objects.Money
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AmountRange
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.InvestmentPeriod
+import com.pawelcz.investment_cqrs.core.api.exceptions.WrongArgumentException
 import com.pawelcz.investment_cqrs.core.api.util.ProfitCalculator
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
@@ -28,7 +29,7 @@ class Wallet(
     fun handle(registerInvestmentCommand: RegisterInvestmentCommand, investmentReader: InvestmentReader){
         val investment = investmentReader.loadInvestment(registerInvestmentCommand.investmentId)
         if(!investment.amountRange.isBetween(registerInvestmentCommand.amount))
-            throw IllegalArgumentException("This amount doesn't match required range")
+            throw WrongArgumentException("This amount doesn't match required range")
         val investmentRegisteredEvent = InvestmentRegisteredEvent(
             registerInvestmentCommand.investorId,
             registerInvestmentCommand.investmentId,

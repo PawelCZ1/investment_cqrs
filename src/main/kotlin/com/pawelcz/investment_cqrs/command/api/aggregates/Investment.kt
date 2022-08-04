@@ -5,6 +5,7 @@ import com.pawelcz.investment_cqrs.command.api.commands.DeactivateInvestmentComm
 import com.pawelcz.investment_cqrs.command.api.events.*
 import com.pawelcz.investment_cqrs.command.api.value_objects.Money
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.*
+import com.pawelcz.investment_cqrs.core.api.exceptions.WrongArgumentException
 import com.pawelcz.investment_cqrs.core.api.util.ProfitCalculator
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
@@ -45,7 +46,7 @@ class Investment {
     @CommandHandler
     fun handle(deactivateInvestmentCommand: DeactivateInvestmentCommand){
         if(!this.status.isActive)
-            throw IllegalArgumentException("This investment is already inactive")
+            throw WrongArgumentException("This investment is already inactive")
         val investmentDeactivatedEvent = InvestmentDeactivatedEvent(
             deactivateInvestmentCommand.investmentId,
             Status.INACTIVE

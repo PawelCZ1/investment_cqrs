@@ -1,6 +1,7 @@
 package com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects
 
 
+import com.pawelcz.investment_cqrs.core.api.exceptions.WrongArgumentException
 import java.time.LocalDate
 
 data class PersonalData(
@@ -10,7 +11,7 @@ data class PersonalData(
 ){
     init {
         if(dateOfBirth.isAfter(LocalDate.now().minusYears(18)))
-            throw IllegalArgumentException("This person is too young to be registered as investor")
+            throw WrongArgumentException("This person is too young to be registered as investor")
     }
 
 }

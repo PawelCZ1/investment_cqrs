@@ -1,5 +1,6 @@
 package com.pawelcz.investment_cqrs.command.api.value_objects
 
+import com.pawelcz.investment_cqrs.core.api.exceptions.WrongArgumentException
 
 
 data class Money(
@@ -8,6 +9,6 @@ data class Money(
 ){
     init {
         if(amount < 0)
-            throw IllegalArgumentException("Amount cannot be negative")
+            throw WrongArgumentException("Amount cannot be negative")
     }
 }

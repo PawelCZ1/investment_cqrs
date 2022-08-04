@@ -1,5 +1,6 @@
 package com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects
 
+import com.pawelcz.investment_cqrs.core.api.exceptions.WrongArgumentException
 import java.time.LocalDate
 
 data class InvestmentPeriod(
@@ -8,6 +9,6 @@ data class InvestmentPeriod(
 ){
     init {
         if(!startDate.isBefore(endDate))
-            throw IllegalArgumentException("Incorrect period")
+            throw WrongArgumentException("Incorrect period")
     }
 }
