@@ -9,7 +9,6 @@ import com.pawelcz.investment_cqrs.core.api.dto.RegisterInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.dto.RegisterInvestorDTO
 import com.pawelcz.investment_cqrs.core.api.services.InvestmentService
 import com.pawelcz.investment_cqrs.core.api.services.InvestorService
-import org.assertj.core.api.AssertionsForClassTypes
 import org.assertj.core.api.AssertionsForClassTypes.assertThat
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,11 +21,8 @@ import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
-import org.testcontainers.containers.JdbcDatabaseContainer
-import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import org.testcontainers.utility.DockerImageName
 import java.lang.Thread.sleep
 import java.time.LocalDate
 import java.util.UUID
@@ -37,7 +33,7 @@ import java.util.UUID
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )
-class InvestorIntegrationTest {
+class PostgresInvestorIntegrationTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc

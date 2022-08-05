@@ -1,16 +1,12 @@
 package com.pawelcz.investment_cqrs.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.pawelcz.investment_cqrs.InvestmentCqrsApplication
 import com.pawelcz.investment_cqrs.command.api.value_objects.Currency
+import com.pawelcz.investment_cqrs.containers.AxonServerContainer
 import com.pawelcz.investment_cqrs.containers.postgres
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
-import com.pawelcz.investment_cqrs.core.api.dto.GetAllInvestmentsDTO
-import com.pawelcz.investment_cqrs.core.api.exceptions.WrongArgumentException
 import com.pawelcz.investment_cqrs.core.api.services.InvestmentService
-import junit.framework.TestCase.assertTrue
 import org.assertj.core.api.AssertionsForClassTypes.assertThat
-import org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -23,11 +19,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.patch
 import org.springframework.test.web.servlet.post
-import org.testcontainers.containers.JdbcDatabaseContainer
-import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import org.testcontainers.utility.DockerImageName
 import java.lang.Thread.sleep
 
 
@@ -37,7 +30,7 @@ import java.lang.Thread.sleep
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )
-class InvestmentIntegrationTest {
+class AxonServerInvestmentIntegrationTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -48,31 +41,28 @@ class InvestmentIntegrationTest {
 
 
 
-    companion object{
-
+    companion object {
         @Container
-        @JvmStatic
-        val container = postgres("postgres:14.4"){
-            withDatabaseName("testdb")
-            withUsername("test")
-            withPassword("test")
-        }
-
+        val axon = AxonServerContainer
 
         @JvmStatic
         @DynamicPropertySource
-        fun datasourceConfig(registry: DynamicPropertyRegistry){
-            registry.add("spring.datasource.url", container::getJdbcUrl)
-            registry.add("spring.datasource.username", container::getUsername)
-            registry.add("spring.datasource.password", container::getPassword)
+        fun axonProperties(registry: DynamicPropertyRegistry) {
+            registry.add("axon.axonserver.servers") { axon.servers }
         }
 
+        @AfterEach
+        internal fun tearDown() {
+            axon.close()
+            axon.start()
+        }
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     fun `container is running`(){
-        assertThat(container.isRunning).isEqualTo(true)
+        assertThat(axon.isRunning).isEqualTo(true)
+
     }
 
     @Nested
@@ -122,6 +112,8 @@ class InvestmentIntegrationTest {
                     status { isBadRequest() }
                     content { string("{\"status\":400,\"message\":\"Minimum amount cannot be higher than maximum \"}") }
                 }
+
+
 
         }
     }
