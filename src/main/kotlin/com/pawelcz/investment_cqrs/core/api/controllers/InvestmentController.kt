@@ -1,4 +1,4 @@
-package com.pawelcz.investment_cqrs.command.api.controllers
+package com.pawelcz.investment_cqrs.core.api.controllers
 
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.services.InvestmentService

@@ -3,6 +3,7 @@ package com.pawelcz.investment_cqrs.integration
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.pawelcz.investment_cqrs.InvestmentCqrsApplication
 import com.pawelcz.investment_cqrs.command.api.value_objects.Currency
+import com.pawelcz.investment_cqrs.containers.postgres
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.dto.GetAllInvestmentsDTO
 import com.pawelcz.investment_cqrs.core.api.exceptions.WrongArgumentException
@@ -29,8 +30,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
 import java.lang.Thread.sleep
 
-fun postgres(imageName: String, opts: JdbcDatabaseContainer<Nothing>.() -> Unit) =
-    PostgreSQLContainer<Nothing>(DockerImageName.parse(imageName)).apply(opts)
+
 
 @Testcontainers
 @AutoConfigureMockMvc
@@ -51,10 +51,16 @@ class InvestmentIntegrationTest {
     companion object{
 
         @Container
-        val container = postgres("postgres:14.4"){}
+        @JvmStatic
+        val container = postgres("postgres:14.4"){
+            withDatabaseName("testdb")
+            withUsername("test")
+            withPassword("test")
+        }
 
 
-
+        @JvmStatic
+        @DynamicPropertySource
         fun datasourceConfig(registry: DynamicPropertyRegistry){
             registry.add("spring.datasource.url", container::getJdbcUrl)
             registry.add("spring.datasource.username", container::getUsername)
@@ -114,7 +120,9 @@ class InvestmentIntegrationTest {
                 .andDo { print() }
                 .andExpect {
                     status { isBadRequest() }
+                    content { string("{\"status\":400,\"message\":\"Minimum amount cannot be higher than maximum \"}") }
                 }
+
         }
     }
 
@@ -172,7 +180,7 @@ class InvestmentIntegrationTest {
                 .andDo { print() }
                 .andExpect {
                     status { isBadRequest() }
-
+                    content { string("{\"status\":400,\"message\":\"This investment is already inactive\"}") }
                 }
         }
 
@@ -217,6 +225,9 @@ class InvestmentIntegrationTest {
                     content { contentType(MediaType.APPLICATION_JSON) }
                     jsonPath("$.size()") {value(3)}
                     jsonPath("$[0]"){content { contentType(MediaType.APPLICATION_JSON)}}
+                    jsonPath("$[0].currency") {value("EURO")}
+                    jsonPath("$[1].currency") {value("USD")}
+                    jsonPath("$[2].currency") {value("PLN")}
                 }
         }
 
