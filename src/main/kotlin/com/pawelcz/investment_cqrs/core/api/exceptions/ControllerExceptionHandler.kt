@@ -1,5 +1,6 @@
 package com.pawelcz.investment_cqrs.core.api.exceptions
 
+import org.axonframework.commandhandling.CommandExecutionException
 import org.axonframework.modelling.command.AggregateEntityNotFoundException
 import org.axonframework.modelling.command.AggregateNotFoundException
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
@@ -51,5 +52,15 @@ class ControllerExceptionHandler {
             ex.message
         )
         return ResponseEntity(errorMessage, HttpStatus.NOT_FOUND)
+    }
+
+    @ExceptionHandler
+    fun handleCommandExecutionException(ex: CommandExecutionException): ResponseEntity<ErrorMessageModel> {
+
+        val errorMessage = ErrorMessageModel(
+            HttpStatus.BAD_REQUEST.value(),
+            ex.message
+        )
+        return ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST)
     }
 }

@@ -1,8 +1,7 @@
-package com.pawelcz.investment_cqrs.integration
+package com.pawelcz.investment_cqrs.integration.rest
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.pawelcz.investment_cqrs.command.api.value_objects.Currency
-import com.pawelcz.investment_cqrs.containers.AxonServerContainer
 import com.pawelcz.investment_cqrs.containers.postgres
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.dto.CreateWalletDTO
@@ -34,7 +33,7 @@ import java.util.UUID
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )
-class AxonServerInvestorIntegrationTest {
+class PostgresInvestorIntegrationTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -47,15 +46,7 @@ class AxonServerInvestorIntegrationTest {
 
 
 
-    companion object {
-        @Container
-        val axon = AxonServerContainer
-
-        @JvmStatic
-        @DynamicPropertySource
-        fun axonProperties(registry: DynamicPropertyRegistry) {
-            registry.add("axon.axonserver.servers") { axon.servers }
-        }
+    companion object{
 
         @Container
         @JvmStatic
@@ -65,7 +56,6 @@ class AxonServerInvestorIntegrationTest {
             withPassword("test")
         }
 
-
         @JvmStatic
         @DynamicPropertySource
         fun datasourceConfig(registry: DynamicPropertyRegistry){
@@ -73,12 +63,13 @@ class AxonServerInvestorIntegrationTest {
             registry.add("spring.datasource.username", container::getUsername)
             registry.add("spring.datasource.password", container::getPassword)
         }
+
+
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
-    fun `containers are running`(){
-        assertThat(axon.isRunning).isEqualTo(true)
+    fun `container is running`(){
         assertThat(container.isRunning).isEqualTo(true)
     }
 

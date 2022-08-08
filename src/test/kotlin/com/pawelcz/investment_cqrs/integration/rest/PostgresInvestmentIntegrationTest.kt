@@ -1,8 +1,7 @@
-package com.pawelcz.investment_cqrs.integration
+package com.pawelcz.investment_cqrs.integration.rest
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.pawelcz.investment_cqrs.command.api.value_objects.Currency
-import com.pawelcz.investment_cqrs.containers.AxonServerContainer
 import com.pawelcz.investment_cqrs.containers.postgres
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.services.InvestmentService
@@ -30,7 +29,7 @@ import java.lang.Thread.sleep
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )
-class AxonServerInvestmentIntegrationTest {
+class PostgresInvestmentIntegrationTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -41,28 +40,31 @@ class AxonServerInvestmentIntegrationTest {
 
 
 
-    companion object {
+    companion object{
+
         @Container
-        val axon = AxonServerContainer
+        @JvmStatic
+        val container = postgres("postgres:14.4"){
+            withDatabaseName("testdb")
+            withUsername("test")
+            withPassword("test")
+        }
+
 
         @JvmStatic
         @DynamicPropertySource
-        fun axonProperties(registry: DynamicPropertyRegistry) {
-            registry.add("axon.axonserver.servers") { axon.servers }
+        fun datasourceConfig(registry: DynamicPropertyRegistry){
+            registry.add("spring.datasource.url", container::getJdbcUrl)
+            registry.add("spring.datasource.username", container::getUsername)
+            registry.add("spring.datasource.password", container::getPassword)
         }
 
-        @AfterEach
-        internal fun tearDown() {
-            axon.close()
-            axon.start()
-        }
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     fun `container is running`(){
-        assertThat(axon.isRunning).isEqualTo(true)
-
+        assertThat(container.isRunning).isEqualTo(true)
     }
 
     @Nested
@@ -112,8 +114,6 @@ class AxonServerInvestmentIntegrationTest {
                     status { isBadRequest() }
                     content { string("{\"status\":400,\"message\":\"Minimum amount cannot be higher than maximum \"}") }
                 }
-
-
 
         }
     }

@@ -1,10 +1,12 @@
-package com.pawelcz.investment_cqrs.integration
+package com.pawelcz.investment_cqrs.integration.rest
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.pawelcz.investment_cqrs.command.api.value_objects.Currency
+import com.pawelcz.investment_cqrs.containers.AxonServerContainer
 import com.pawelcz.investment_cqrs.containers.postgres
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.services.InvestmentService
+import com.pawelcz.investment_cqrs.query.api.repositories.InvestmentEntityRepository
 import org.assertj.core.api.AssertionsForClassTypes.assertThat
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,7 +31,7 @@ import java.lang.Thread.sleep
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )
-class PostgresInvestmentIntegrationTest {
+class AxonServerRESTInvestmentIntegrationTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -37,14 +39,24 @@ class PostgresInvestmentIntegrationTest {
     private lateinit var objectMapper: ObjectMapper
     @Autowired
     private lateinit var investmentService: InvestmentService
+    @Autowired
+    private lateinit var investmentEntityRepository: InvestmentEntityRepository
 
 
 
-    companion object{
+    companion object {
+        @Container
+        val axon = AxonServerContainer
+
+        @JvmStatic
+        @DynamicPropertySource
+        fun axonProperties(registry: DynamicPropertyRegistry) {
+            registry.add("axon.axonserver.servers") { axon.servers }
+        }
 
         @Container
         @JvmStatic
-        val container = postgres("postgres:14.4"){
+        val postgres = postgres("postgres:14.4"){
             withDatabaseName("testdb")
             withUsername("test")
             withPassword("test")
@@ -54,17 +66,19 @@ class PostgresInvestmentIntegrationTest {
         @JvmStatic
         @DynamicPropertySource
         fun datasourceConfig(registry: DynamicPropertyRegistry){
-            registry.add("spring.datasource.url", container::getJdbcUrl)
-            registry.add("spring.datasource.username", container::getUsername)
-            registry.add("spring.datasource.password", container::getPassword)
+            registry.add("spring.datasource.url", postgres::getJdbcUrl)
+            registry.add("spring.datasource.username", postgres::getUsername)
+            registry.add("spring.datasource.password", postgres::getPassword)
         }
+
 
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
-    fun `container is running`(){
-        assertThat(container.isRunning).isEqualTo(true)
+    fun `containers are running`(){
+        assertThat(axon.isRunning).isEqualTo(true)
+        assertThat(postgres.isRunning).isEqualTo(true)
     }
 
     @Nested
@@ -74,7 +88,9 @@ class PostgresInvestmentIntegrationTest {
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
         fun `create investment test`(){
-
+            sleep(1000)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             // given
             val createInvestmentDTO = CreateInvestmentDTO(
                 Currency.EURO,
@@ -97,6 +113,9 @@ class PostgresInvestmentIntegrationTest {
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
         fun `should throw wrong argument exception`(){
+            sleep(1000)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             // given
             val createInvestmentDTO = CreateInvestmentDTO(
                 Currency.EURO,
@@ -115,6 +134,8 @@ class PostgresInvestmentIntegrationTest {
                     content { string("{\"status\":400,\"message\":\"Minimum amount cannot be higher than maximum \"}") }
                 }
 
+
+
         }
     }
 
@@ -126,6 +147,9 @@ class PostgresInvestmentIntegrationTest {
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
         fun `deactivate investment test`(){
+            sleep(1000)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             // given
             val createInvestmentDTO = CreateInvestmentDTO(
                 Currency.EURO,
@@ -133,6 +157,7 @@ class PostgresInvestmentIntegrationTest {
                 10000.0,
                 "3m=4.0,6m=6.0,12m=8.0"
             )
+
             investmentService.createInvestment(createInvestmentDTO)
             sleep(2000)
             assertThat(investmentService.getAllInvestments().size).isEqualTo(1)
@@ -150,7 +175,10 @@ class PostgresInvestmentIntegrationTest {
 
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
-        fun `should throw wrong argument exception`(){
+        fun `should throw command execution exception`(){
+            sleep(1000)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             // given
             val createInvestmentDTO = CreateInvestmentDTO(
                 Currency.EURO,
@@ -188,6 +216,9 @@ class PostgresInvestmentIntegrationTest {
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
         fun `get all investments test`(){
+            sleep(1000)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             val firstInvestment = CreateInvestmentDTO(
                 Currency.EURO,
                 100.0,
@@ -223,6 +254,18 @@ class PostgresInvestmentIntegrationTest {
                 }
         }
 
+    }
+
+    @Nested
+    @DisplayName("axon server event sourcing test")
+    @TestInstance(TestInstance.Lifecycle.PER_METHOD)
+    inner class AxonServerEventSourcing{
+        @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+        @Test
+        fun `investment repository size after event sourcing test`(){
+            sleep(1000)
+            assertThat(investmentService.getAllInvestments().size).isEqualTo(6)
+        }
     }
 
 

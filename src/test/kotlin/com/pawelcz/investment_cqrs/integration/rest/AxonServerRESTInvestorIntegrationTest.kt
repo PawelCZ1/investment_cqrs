@@ -1,7 +1,8 @@
-package com.pawelcz.investment_cqrs.integration
+package com.pawelcz.investment_cqrs.integration.rest
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.pawelcz.investment_cqrs.command.api.value_objects.Currency
+import com.pawelcz.investment_cqrs.containers.AxonServerContainer
 import com.pawelcz.investment_cqrs.containers.postgres
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.dto.CreateWalletDTO
@@ -9,6 +10,10 @@ import com.pawelcz.investment_cqrs.core.api.dto.RegisterInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.dto.RegisterInvestorDTO
 import com.pawelcz.investment_cqrs.core.api.services.InvestmentService
 import com.pawelcz.investment_cqrs.core.api.services.InvestorService
+import com.pawelcz.investment_cqrs.query.api.repositories.InvestmentEntityRepository
+import com.pawelcz.investment_cqrs.query.api.repositories.InvestorEntityRepository
+import com.pawelcz.investment_cqrs.query.api.repositories.RegisteredInvestmentEntityRepository
+import com.pawelcz.investment_cqrs.query.api.repositories.WalletEntityRepository
 import org.assertj.core.api.AssertionsForClassTypes.assertThat
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,7 +38,7 @@ import java.util.UUID
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )
-class PostgresInvestorIntegrationTest {
+class AxonServerRESTInvestorIntegrationTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -43,34 +48,50 @@ class PostgresInvestorIntegrationTest {
     private lateinit var investorService: InvestorService
     @Autowired
     private lateinit var investmentService: InvestmentService
+    @Autowired
+    private lateinit var investorEntityRepository: InvestorEntityRepository
+    @Autowired
+    private lateinit var walletEntityRepository: WalletEntityRepository
+    @Autowired
+    private lateinit var registeredInvestmentEntityRepository: RegisteredInvestmentEntityRepository
+    @Autowired
+    private lateinit var investmentEntityRepository: InvestmentEntityRepository
 
 
 
-    companion object{
+    companion object {
+        @Container
+        val axon = AxonServerContainer
+
+        @JvmStatic
+        @DynamicPropertySource
+        fun axonProperties(registry: DynamicPropertyRegistry) {
+            registry.add("axon.axonserver.servers") { axon.servers }
+        }
 
         @Container
         @JvmStatic
-        val container = postgres("postgres:14.4"){
+        val postgres = postgres("postgres:14.4"){
             withDatabaseName("testdb")
             withUsername("test")
             withPassword("test")
         }
 
+
         @JvmStatic
         @DynamicPropertySource
         fun datasourceConfig(registry: DynamicPropertyRegistry){
-            registry.add("spring.datasource.url", container::getJdbcUrl)
-            registry.add("spring.datasource.username", container::getUsername)
-            registry.add("spring.datasource.password", container::getPassword)
+            registry.add("spring.datasource.url", postgres::getJdbcUrl)
+            registry.add("spring.datasource.username", postgres::getUsername)
+            registry.add("spring.datasource.password", postgres::getPassword)
         }
-
-
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
-    fun `container is running`(){
-        assertThat(container.isRunning).isEqualTo(true)
+    fun `containers are running`(){
+        assertThat(axon.isRunning).isEqualTo(true)
+        assertThat(postgres.isRunning).isEqualTo(true)
     }
 
 
@@ -83,6 +104,15 @@ class PostgresInvestorIntegrationTest {
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
         fun `register new investor test`(){
+            sleep(1000)
+            registeredInvestmentEntityRepository.deleteAll()
+            sleep(100)
+            walletEntityRepository.deleteAll()
+            sleep(100)
+            investorEntityRepository.deleteAll()
+            sleep(100)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             val registerInvestorDTO = RegisterInvestorDTO(
                 "",
                 "",
@@ -102,6 +132,15 @@ class PostgresInvestorIntegrationTest {
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
         fun `should throw wrong argument exception test`(){
+            sleep(1000)
+            registeredInvestmentEntityRepository.deleteAll()
+            sleep(100)
+            walletEntityRepository.deleteAll()
+            sleep(100)
+            investorEntityRepository.deleteAll()
+            sleep(100)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             val registerInvestorDTO = RegisterInvestorDTO(
                 "",
                 "",
@@ -127,6 +166,15 @@ class PostgresInvestorIntegrationTest {
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
         fun `get all investors test`(){
+            sleep(1000)
+            registeredInvestmentEntityRepository.deleteAll()
+            sleep(100)
+            walletEntityRepository.deleteAll()
+            sleep(100)
+            investorEntityRepository.deleteAll()
+            sleep(100)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             val firstInvestor = RegisterInvestorDTO(
                 "a",
                 "a",
@@ -159,6 +207,15 @@ class PostgresInvestorIntegrationTest {
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
         fun `create wallet test`(){
+            sleep(1000)
+            registeredInvestmentEntityRepository.deleteAll()
+            sleep(100)
+            walletEntityRepository.deleteAll()
+            sleep(100)
+            investorEntityRepository.deleteAll()
+            sleep(100)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             val investor = RegisterInvestorDTO(
                 "test",
                 "test",
@@ -181,7 +238,16 @@ class PostgresInvestorIntegrationTest {
         }
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
-        fun `should throw aggregate not found exception`(){
+        fun `should throw command execution exception`(){
+            sleep(1000)
+            registeredInvestmentEntityRepository.deleteAll()
+            sleep(100)
+            walletEntityRepository.deleteAll()
+            sleep(100)
+            investorEntityRepository.deleteAll()
+            sleep(100)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             val investorId = UUID.randomUUID().toString()
             val wallet = CreateWalletDTO(
                 "test",
@@ -193,8 +259,8 @@ class PostgresInvestorIntegrationTest {
             }
                 .andDo { print() }
                 .andExpect {
-                    status { isNotFound() }
-                    content { string("{\"status\":404,\"message\":\"" +
+                    status { isBadRequest() }
+                    content { string("{\"status\":400,\"message\":\"" +
                             "The aggregate was not found in the event store\"}") }
                 }
         }
@@ -208,6 +274,15 @@ class PostgresInvestorIntegrationTest {
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
         fun `get all wallets test`(){
+            sleep(1000)
+            registeredInvestmentEntityRepository.deleteAll()
+            sleep(100)
+            walletEntityRepository.deleteAll()
+            sleep(100)
+            investorEntityRepository.deleteAll()
+            sleep(100)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             val investor = RegisterInvestorDTO(
                 "test",
                 "test",
@@ -246,6 +321,15 @@ class PostgresInvestorIntegrationTest {
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
         fun `register investment test`(){
+            sleep(1000)
+            registeredInvestmentEntityRepository.deleteAll()
+            sleep(100)
+            walletEntityRepository.deleteAll()
+            sleep(100)
+            investorEntityRepository.deleteAll()
+            sleep(100)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             val investor = RegisterInvestorDTO(
                 "test",
                 "test",
@@ -291,7 +375,16 @@ class PostgresInvestorIntegrationTest {
 
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
-        fun `should throw aggregate not found exception`(){
+        fun `should throw another command execution exception`(){
+            sleep(1000)
+            registeredInvestmentEntityRepository.deleteAll()
+            sleep(100)
+            walletEntityRepository.deleteAll()
+            sleep(100)
+            investorEntityRepository.deleteAll()
+            sleep(100)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             val investor = RegisterInvestorDTO(
                 "test",
                 "test",
@@ -331,15 +424,24 @@ class PostgresInvestorIntegrationTest {
             }
                 .andDo { print() }
                 .andExpect {
-                    status { isNotFound() }
-                    content { string("{\"status\":404,\"message\":\"" +
+                    status { isBadRequest() }
+                    content { string("{\"status\":400,\"message\":\"" +
                             "The aggregate was not found in the event store\"}") }
                 }
         }
 
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
-        fun `should throw aggregate entity not found exception`(){
+        fun `should throw command execution exception`(){
+            sleep(1000)
+            registeredInvestmentEntityRepository.deleteAll()
+            sleep(100)
+            walletEntityRepository.deleteAll()
+            sleep(100)
+            investorEntityRepository.deleteAll()
+            sleep(100)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             val investor = RegisterInvestorDTO(
                 "test",
                 "test",
@@ -379,8 +481,8 @@ class PostgresInvestorIntegrationTest {
             }
                 .andDo { print() }
                 .andExpect {
-                    status { isNotFound() }
-                    content { string("{\"status\":404,\"message\":\"" +
+                    status { isBadRequest() }
+                    content { string("{\"status\":400,\"message\":\"" +
                             "Aggregate cannot handle command" +
                             " [com.pawelcz.investment_cqrs.command.api.commands.RegisterInvestmentCommand]," +
                             " as there is no entity instance within the aggregate to forward it to.\"}") }
@@ -395,6 +497,15 @@ class PostgresInvestorIntegrationTest {
         @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
         @Test
         fun `get all registered investments`(){
+            sleep(1000)
+            registeredInvestmentEntityRepository.deleteAll()
+            sleep(100)
+            walletEntityRepository.deleteAll()
+            sleep(100)
+            investorEntityRepository.deleteAll()
+            sleep(100)
+            investmentEntityRepository.deleteAll()
+            sleep(1000)
             val investor = RegisterInvestorDTO(
                 "test",
                 "test",
@@ -463,6 +574,21 @@ class PostgresInvestorIntegrationTest {
                     jsonPath("$[1].profit") {value(181)}
                     jsonPath("$[2].profit") {value(212)}
                 }
+        }
+    }
+
+    @Nested
+    @DisplayName("axon server event sourcing test")
+    @TestInstance(TestInstance.Lifecycle.PER_METHOD)
+    inner class AxonServerEventSourcing{
+        @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+        @Test
+        fun `investment repository size after event sourcing test`(){
+            sleep(1000)
+            assertThat(investmentService.getAllInvestments().size).isEqualTo(4)
+            assertThat(investorService.getAllInvestors().size).isEqualTo(9)
+            assertThat(investorService.getAllWallets().size).isEqualTo(7)
+            assertThat(investorService.getAllRegisteredInvestments().size).isEqualTo(4)
         }
     }
 }
