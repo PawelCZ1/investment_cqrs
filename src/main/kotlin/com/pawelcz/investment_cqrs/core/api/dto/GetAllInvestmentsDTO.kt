@@ -8,7 +8,7 @@ data class GetAllInvestmentsDTO(
     val investmentId: String,
     val minimumAmount: Double,
     val maximumAmount: Double,
-    val currency: Currency,
+    val currency: String,
     val availableInvestmentPeriods: String,
-    val status: Status
+    val status: String
 )

@@ -370,6 +370,80 @@ class CommandEventIntegrationTest {
                     assertThat(exception.message).isEqualTo(expectedMessage)
                 }
         }
+
+        @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+        @DisplayName("third unhappy scenario")
+        @Test
+        fun createInvestorWalletAndThenRegisterAnInvestmentThirdUnhappyScenario(){
+            val createInvestmentCommand = CreateInvestmentCommand(
+                UUID.randomUUID().toString(),
+                AmountRange(Money(500.0, Currency.EURO), Money(5000.0, Currency.EURO)),
+                AvailableCapitalizationPeriods(mapOf("3m" to 3.0, "6m" to 4.0, "12m" to 4.5))
+            )
+            commandGateway.sendAndWait<Any>(createInvestmentCommand)
+            await().with().pollInterval(Duration.ofMillis(300))
+                .atMost(Duration.ofSeconds(5)).untilAsserted {
+                    val investmentCreatedEvent = eventStore.readEvents(createInvestmentCommand.investmentId)
+                        .asStream().toList().last().payload as InvestmentCreatedEvent
+                    assertThat(investmentCreatedEvent.investmentId).isEqualTo(createInvestmentCommand.investmentId)
+                    assertThat(investmentCreatedEvent.amountRange).isEqualTo(createInvestmentCommand.amountRange)
+                    assertThat(investmentCreatedEvent.availableCapitalizationPeriods)
+                        .isEqualTo(createInvestmentCommand.availableCapitalizationPeriods)
+                    assertThat(investmentCreatedEvent.status).isEqualTo(Status.ACTIVE)
+                }
+            val registerInvestorCommand = RegisterInvestorCommand(
+                UUID.randomUUID().toString(),
+                PersonalData(
+                    "test",
+                    "test",
+                    LocalDate.parse("1970-01-01")
+                )
+            )
+            commandGateway.sendAndWait<Any>(registerInvestorCommand)
+            await().with().pollInterval(Duration.ofMillis(300))
+                .atMost(Duration.ofSeconds(5)).untilAsserted {
+                    val investorRegisteredEvent = eventStore.readEvents(registerInvestorCommand.investorId)
+                        .asStream().toList().last().payload as InvestorRegisteredEvent
+                    assertThat(investorRegisteredEvent.investorId).isEqualTo(registerInvestorCommand.investorId)
+                    assertThat(investorRegisteredEvent.personalData).isEqualTo(registerInvestorCommand.personalData)
+                }
+            val createWalletCommand = CreateWalletCommand(
+                registerInvestorCommand.investorId,
+                UUID.randomUUID().toString(),
+                "test"
+            )
+            commandGateway.sendAndWait<Any>(createWalletCommand)
+            await().with().pollInterval(Duration.ofMillis(300))
+                .atMost(Duration.ofSeconds(5)).untilAsserted {
+                    val walletCreatedEvent = eventStore.readEvents(createWalletCommand.investorId)
+                        .asStream().toList().last().payload as WalletCreatedEvent
+                    assertThat(walletCreatedEvent.investorId).isEqualTo(createWalletCommand.investorId)
+                    assertThat(walletCreatedEvent.walletId).isEqualTo(createWalletCommand.walletId)
+                    assertThat(walletCreatedEvent.name).isEqualTo(createWalletCommand.name)
+                }
+            val registerInvestmentCommand = RegisterInvestmentCommand(
+                createWalletCommand.investorId,
+                createInvestmentCommand.investmentId,
+                UUID.randomUUID().toString(),
+                "test",
+                3000.0,
+                "test",
+                "3m",
+                "10"
+            )
+
+            await().with().pollInterval(Duration.ofMillis(300))
+                .atMost(Duration.ofSeconds(5)).untilAsserted {
+                    val exception = assertThrows<CommandExecutionException> {
+                        commandGateway.sendAndWait<Any>(registerInvestmentCommand)
+                    }
+                    val expectedMessage = "Aggregate cannot handle command" +
+                            " [com.pawelcz.investment_cqrs.command.api.commands.RegisterInvestmentCommand]," +
+                            " as there is no entity instance within the aggregate to forward it to."
+                    assertThat(exception.message).isEqualTo(expectedMessage)
+                }
+
+        }
     }
 }
 

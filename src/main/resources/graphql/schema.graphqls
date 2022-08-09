@@ -1,0 +1,23 @@
+type InvestmentEntity {
+    investmentId: ID!,
+    minimumAmount: Float!,
+    maximumAmount: Float!,
+    currency: String!,
+    availableInvestmentPeriods: String!,
+    status: String!
+}
+
+input CreateInvestmentDTO {
+    currency: String!
+    minimumAmount: Float!,
+    maximumAmount: Float!,
+    availableInvestmentPeriods: String!
+}
+
+type Query {
+    investments: [InvestmentEntity]
+}
+
+type Mutation {
+    createInvestment(createInvestmentDTO: CreateInvestmentDTO): String
+}

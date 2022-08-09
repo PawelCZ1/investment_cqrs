@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/investments")
-class InvestmentController(
+class InvestmentRestController(
     private val investmentService: InvestmentService
 ) {
 

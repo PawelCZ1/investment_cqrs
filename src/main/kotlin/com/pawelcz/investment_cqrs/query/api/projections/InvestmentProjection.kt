@@ -26,9 +26,9 @@ class InvestmentProjection(
                     investmentEntity.investmentId,
                     investmentEntity.minimumAmount,
                     investmentEntity.maximumAmount,
-                    investmentEntity.currency,
+                    investmentEntity.currency.toString(),
                     investmentEntity.availableInvestmentPeriods,
-                    investmentEntity.status
+                    investmentEntity.status.toString()
                 )
             )
         return investments

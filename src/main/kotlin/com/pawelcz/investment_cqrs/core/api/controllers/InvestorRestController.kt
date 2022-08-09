@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/investors")
-class InvestorController(private val investorService: InvestorService) {
+class InvestorRestController(private val investorService: InvestorService) {
 
     @PostMapping
     fun registerNewInvestor(@RequestBody registerInvestorDTO: RegisterInvestorDTO)
