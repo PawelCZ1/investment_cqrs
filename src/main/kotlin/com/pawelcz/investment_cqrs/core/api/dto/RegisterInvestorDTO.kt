@@ -5,5 +5,5 @@ import java.time.LocalDate
 data class RegisterInvestorDTO(
     val name: String,
     val surname: String,
-    val dateOfBirth: LocalDate
+    val dateOfBirth: String
 )

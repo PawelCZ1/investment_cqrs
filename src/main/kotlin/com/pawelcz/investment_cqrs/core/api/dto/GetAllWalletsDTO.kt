@@ -4,5 +4,5 @@ data class GetAllWalletsDTO(
     val walletId: String,
     val name: String,
     val investorId: String,
-    val calculations: List<String>
+    val registeredInvestments: List<String>
 )

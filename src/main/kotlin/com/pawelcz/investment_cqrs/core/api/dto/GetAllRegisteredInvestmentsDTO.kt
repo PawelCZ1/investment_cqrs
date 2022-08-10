@@ -1,9 +1,11 @@
 package com.pawelcz.investment_cqrs.core.api.dto
 
+import com.pawelcz.investment_cqrs.command.api.value_objects.Currency
 import java.time.LocalDate
 
 data class GetAllRegisteredInvestmentsDTO(
-    val calculationId: String,
+    val registeredInvestmentId: String,
+    val currency: Currency,
     val amount: Double,
     val investmentTarget: String,
     val capitalizationPeriodInMonths: String,

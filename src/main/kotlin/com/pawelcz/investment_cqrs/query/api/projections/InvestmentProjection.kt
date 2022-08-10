@@ -36,12 +36,13 @@ class InvestmentProjection(
 
     @QueryHandler
     fun handle(getAllRegisteredInvestmentsQuery: GetAllRegisteredInvestmentsQuery): List<GetAllRegisteredInvestmentsDTO>{
-        val registeredInvestmentEntites = registeredInvestmentEntityRepository.findAll()
+        val registeredInvestmentEntities = registeredInvestmentEntityRepository.findAll()
         val registeredInvestments = arrayListOf<GetAllRegisteredInvestmentsDTO>()
-        for(registeredInvestmentEntity in registeredInvestmentEntites)
+        for(registeredInvestmentEntity in registeredInvestmentEntities)
             registeredInvestments.add(
                 GetAllRegisteredInvestmentsDTO(
                     registeredInvestmentEntity.registeredInvestmentId,
+                    registeredInvestmentEntity.currency,
                     registeredInvestmentEntity.amount,
                     registeredInvestmentEntity.investmentTarget,
                     registeredInvestmentEntity.capitalizationPeriodInMonths,

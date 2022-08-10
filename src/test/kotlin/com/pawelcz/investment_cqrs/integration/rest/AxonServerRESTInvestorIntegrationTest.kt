@@ -116,7 +116,7 @@ class AxonServerRESTInvestorIntegrationTest {
             val registerInvestorDTO = RegisterInvestorDTO(
                 "",
                 "",
-                LocalDate.parse("2001-06-18")
+                "2001-06-18"
             )
             mockMvc.post("/investors"){
                 contentType = MediaType.APPLICATION_JSON
@@ -144,7 +144,7 @@ class AxonServerRESTInvestorIntegrationTest {
             val registerInvestorDTO = RegisterInvestorDTO(
                 "",
                 "",
-                LocalDate.parse("2010-06-18")
+                "2010-06-18"
             )
             mockMvc.post("/investors"){
                 contentType = MediaType.APPLICATION_JSON
@@ -178,12 +178,12 @@ class AxonServerRESTInvestorIntegrationTest {
             val firstInvestor = RegisterInvestorDTO(
                 "a",
                 "a",
-                LocalDate.parse("2001-06-18")
+                "2001-06-18"
             )
             val secondInvestor = RegisterInvestorDTO(
                 "b",
                 "b",
-                LocalDate.parse("2002-06-18")
+                "2002-06-18"
             )
             investorService.registerNewInvestor(firstInvestor)
             investorService.registerNewInvestor(secondInvestor)
@@ -219,7 +219,7 @@ class AxonServerRESTInvestorIntegrationTest {
             val investor = RegisterInvestorDTO(
                 "test",
                 "test",
-                LocalDate.parse("2001-06-18")
+                "2001-06-18"
             )
             val investorId = investorService.registerNewInvestor(investor)
             sleep(2000)
@@ -286,7 +286,7 @@ class AxonServerRESTInvestorIntegrationTest {
             val investor = RegisterInvestorDTO(
                 "test",
                 "test",
-                LocalDate.parse("2001-06-18")
+                "2001-06-18"
             )
             val investorId = investorService.registerNewInvestor(investor)
             sleep(2000)
@@ -333,7 +333,7 @@ class AxonServerRESTInvestorIntegrationTest {
             val investor = RegisterInvestorDTO(
                 "test",
                 "test",
-                LocalDate.parse("2001-06-18")
+                "2001-06-18"
             )
             val investorId = investorService.registerNewInvestor(investor)
             sleep(1000)
@@ -388,7 +388,7 @@ class AxonServerRESTInvestorIntegrationTest {
             val investor = RegisterInvestorDTO(
                 "test",
                 "test",
-                LocalDate.parse("2001-06-18")
+                "2001-06-18"
             )
             val investorId = investorService.registerNewInvestor(investor)
             sleep(1000)
@@ -445,7 +445,7 @@ class AxonServerRESTInvestorIntegrationTest {
             val investor = RegisterInvestorDTO(
                 "test",
                 "test",
-                LocalDate.parse("2001-06-18")
+                "2001-06-18"
             )
             val investorId = investorService.registerNewInvestor(investor)
             sleep(1000)
@@ -509,7 +509,7 @@ class AxonServerRESTInvestorIntegrationTest {
             val investor = RegisterInvestorDTO(
                 "test",
                 "test",
-                LocalDate.parse("2001-06-18")
+                "2001-06-18"
             )
             val investorId = investorService.registerNewInvestor(investor)
             sleep(1000)

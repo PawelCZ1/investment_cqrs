@@ -12,6 +12,7 @@ import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.messaging.responsetypes.ResponseTypes
 import org.axonframework.queryhandling.QueryGateway
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.util.UUID
 
 @Service
@@ -26,7 +27,7 @@ class InvestorService(
             PersonalData(
                 registerInvestorDTO.name,
                 registerInvestorDTO.surname,
-                registerInvestorDTO.dateOfBirth
+                LocalDate.parse(registerInvestorDTO.dateOfBirth)
             )
 
         )

@@ -1,0 +1,80 @@
+type Investment {
+    investmentId: ID!,
+    minimumAmount: Float!,
+    maximumAmount: Float!,
+    currency: String!,
+    availableInvestmentPeriods: String!,
+    status: String!
+}
+
+type Investor {
+    investorId: String,
+    name: String,
+    surname: String,
+    dateOfBirth: String,
+    wallets: [String]
+}
+
+type Wallet {
+    walletId: String,
+    name: String,
+    investorId: String,
+    registeredInvestments: [String]
+}
+
+type RegisteredInvestment {
+    registeredInvestmentId: String,
+    currency: String,
+    amount: Float,
+    investmentTarget: String,
+    capitalizationPeriodInMonths: String,
+    annualInterestRate: Float,
+    startDate: String,
+    endDate: String,
+    profit: Float,
+    investmentId: String,
+    walletId: String
+}
+
+input CreateInvestmentDTO {
+    currency: String!
+    minimumAmount: Float!,
+    maximumAmount: Float!,
+    availableInvestmentPeriods: String!
+}
+
+input RegisterInvestorDTO {
+    name: String!,
+    surname: String!,
+    dateOfBirth: String!
+}
+
+input CreateWalletDTO {
+    name: String!,
+    investorId: String!
+}
+
+input RegisterInvestmentDTO {
+    investorId: String!,
+    amount: Float!,
+    investmentTarget: String!,
+    capitalizationPeriod: String!,
+    periodInMonths: String!,
+    investmentId: String!,
+    walletId: String!
+}
+
+type Query {
+    investments: [Investment]
+    investors: [Investor]
+    wallets: [Wallet]
+    registeredInvestments: [RegisteredInvestment]
+}
+
+type Mutation {
+    createInvestment(createInvestmentDTO: CreateInvestmentDTO): String
+    deactivateInvestment(investmentId: String): String
+    registerInvestor(registerInvestorDTO: RegisterInvestorDTO): String
+    createWallet(createWalletDTO: CreateWalletDTO): String
+    registerInvestment(registerInvestmentDTO: RegisterInvestmentDTO): String
+}
