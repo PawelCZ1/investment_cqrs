@@ -6,6 +6,9 @@ import com.pawelcz.investment_cqrs.containers.AxonServerContainer
 import com.pawelcz.investment_cqrs.containers.postgres
 import com.pawelcz.investment_cqrs.core.api.dto.RegisterInvestorDTO
 import com.pawelcz.investment_cqrs.query.api.repositories.InvestmentEntityRepository
+import com.pawelcz.investment_cqrs.query.api.repositories.InvestorEntityRepository
+import com.pawelcz.investment_cqrs.query.api.repositories.RegisteredInvestmentEntityRepository
+import com.pawelcz.investment_cqrs.query.api.repositories.WalletEntityRepository
 import org.assertj.core.api.AssertionsForClassTypes.assertThat
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,11 +38,11 @@ class GraphQLIntegrationTest(@LocalServerPort port: Int) {
     @Autowired
     private lateinit var investmentEntityRepository: InvestmentEntityRepository
     @Autowired
-    private lateinit var investorEntityRepository: InvestmentEntityRepository
+    private lateinit var investorEntityRepository: InvestorEntityRepository
     @Autowired
-    private lateinit var walletEntityRepository: InvestmentEntityRepository
+    private lateinit var walletEntityRepository: WalletEntityRepository
     @Autowired
-    private lateinit var registeredInvestmentEntityRepository: InvestmentEntityRepository
+    private lateinit var registeredInvestmentEntityRepository: RegisteredInvestmentEntityRepository
 
     init {
         webClient = WebClient.create("http://localhost:$port/graphql")
