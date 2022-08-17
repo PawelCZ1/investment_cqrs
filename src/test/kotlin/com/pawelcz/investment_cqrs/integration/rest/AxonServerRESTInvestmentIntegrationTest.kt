@@ -7,7 +7,9 @@ import com.pawelcz.investment_cqrs.containers.postgres
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.services.InvestmentService
 import com.pawelcz.investment_cqrs.query.api.repositories.InvestmentEntityRepository
+import io.mockk.InternalPlatformDsl.toArray
 import org.assertj.core.api.AssertionsForClassTypes.assertThat
+import org.json.JSONObject
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -27,7 +29,7 @@ import java.lang.Thread.sleep
 
 
 @Testcontainers
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )

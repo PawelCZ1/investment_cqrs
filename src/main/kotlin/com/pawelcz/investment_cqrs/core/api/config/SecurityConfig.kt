@@ -19,7 +19,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Value("\${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private val issuer: String = String()
-
     @Bean
     fun jwtDecoder(): JwtDecoder {
         val jwtDecoder = JwtDecoders.fromOidcIssuerLocation(issuer) as NimbusJwtDecoder
