@@ -16,6 +16,7 @@ import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_ob
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.InvestmentPeriod
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.Status
 import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects.PersonalData
+import com.pawelcz.investment_cqrs.core.api.exceptions.WrongArgumentException
 import com.pawelcz.investment_cqrs.core.api.util.ProfitCalculator
 import io.mockk.every
 import io.mockk.mockk
@@ -73,7 +74,7 @@ class InvestorAggregateTest {
     @Test
     fun `too young to be registered as investor illegal argument exception test`(){
         // when
-        val exception = assertThrows<IllegalArgumentException> {
+        val exception = assertThrows<WrongArgumentException> {
             fixture.`when`(RegisterInvestorCommand(
                 "aaa",
                 PersonalData(
