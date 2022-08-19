@@ -1,0 +1,32 @@
+version: '3'
+services:
+  database:
+    image: 'postgres:latest'
+    ports:
+      - "2001:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: default_database
+
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: 'rabbit'
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+
+  application:
+    image: panusdx/investment
+    ports:
+      - "1973:1973"
+    container_name: 'java_app'
+    network_mode: host
+
+networks:
+  rabbitmq_go_net:
+    driver: bridge
+
+

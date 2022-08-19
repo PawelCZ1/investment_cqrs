@@ -12,6 +12,7 @@ import com.pawelcz.investment_cqrs.query.api.repositories.WalletEntityRepository
 import org.assertj.core.api.AssertionsForClassTypes.assertThat
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.test.annotation.DirtiesContext
@@ -30,6 +31,7 @@ import java.util.UUID
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
+@AutoConfigureWebClient
 class GraphQLIntegrationTest(@LocalServerPort port: Int) {
 
     private lateinit var monoGraphQLClient: MonoGraphQLClient

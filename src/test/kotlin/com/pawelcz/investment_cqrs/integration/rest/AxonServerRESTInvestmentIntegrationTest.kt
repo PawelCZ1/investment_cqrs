@@ -29,7 +29,7 @@ import java.lang.Thread.sleep
 
 
 @Testcontainers
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )

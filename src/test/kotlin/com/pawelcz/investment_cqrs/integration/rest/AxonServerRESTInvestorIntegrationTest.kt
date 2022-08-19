@@ -34,7 +34,7 @@ import java.util.UUID
 
 
 @Testcontainers
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )

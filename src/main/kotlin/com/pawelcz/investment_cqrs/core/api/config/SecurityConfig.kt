@@ -32,7 +32,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http.authorizeRequests()
-            .mvcMatchers(HttpMethod.POST,"/*").authenticated()
+            .mvcMatchers(HttpMethod.POST,"/investors").authenticated()
+            .mvcMatchers(HttpMethod.POST,"/investments").authenticated()
+            .mvcMatchers(HttpMethod.POST,"/investors/wallets").authenticated()
+            .mvcMatchers(HttpMethod.POST,"/investors/investment/register").authenticated()
             .mvcMatchers(HttpMethod.PATCH,"/*").authenticated()
             .mvcMatchers("/graphql").authenticated()
             .antMatchers("/actuator/*").authenticated()
