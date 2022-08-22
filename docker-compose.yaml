@@ -8,6 +8,13 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_DB: default_database
+    expose:
+      - 2001
+
+
+
+
+
 
 
   rabbitmq:
@@ -16,17 +23,29 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    expose:
+      - 5672
+
 
 
   application:
+    depends_on:
+      - database
+      - rabbitmq
     image: panusdx/investment
     ports:
       - "1973:1973"
     container_name: 'java_app'
-    network_mode: host
+    expose:
+      - 1973
+    environment:
+      spring.datasource.url: jdbc:postgresql://host.docker.internal:2001/default_database
+      spring.rabbitmq.host: host.docker.internal
+
 
 networks:
   rabbitmq_go_net:
     driver: bridge
+
 
 
