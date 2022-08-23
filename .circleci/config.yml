@@ -12,8 +12,8 @@ jobs:
     # Be sure to update the Docker image tag below to openjdk version of your application.
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/openjdk
     docker:
-      - image: cimg/openjdk:11.0
-      - image: cimg/postgres
+      - image: cimg/openjdk:18.0.2
+      - image: postgres
         environment:
           POSTGRES_USER: admin
           POSTGRES_PASSWORD: password
