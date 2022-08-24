@@ -41,16 +41,16 @@ class AxonConfig {
                 .eventStore(eventStore).build()
         }
     */
-    @Bean
-    fun myQueueMessageSource(messageConverter: AMQPMessageConverter?): SpringAMQPMessageSource? {
-        return object : SpringAMQPMessageSource(messageConverter) {
-            @RabbitListener(queues = ["investment"])
-            @Throws(Exception::class)
-            override fun onMessage(message: Message?, channel: Channel?) {
-                super.onMessage(message, channel)
-            }
-        }
-    }
+//    @Bean
+//    fun myQueueMessageSource(messageConverter: AMQPMessageConverter?): SpringAMQPMessageSource? {
+//        return object : SpringAMQPMessageSource(messageConverter) {
+//            @RabbitListener(queues = ["investment"])
+//            @Throws(Exception::class)
+//            override fun onMessage(message: Message?, channel: Channel?) {
+//                super.onMessage(message, channel)
+//            }
+//        }
+//    }
 
 
 
