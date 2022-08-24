@@ -19,6 +19,7 @@ jobs:
       # Checkout the code as the first step.
       - checkout
       # Use mvn clean and package as the standard maven build phase
+      - run: sudo apt-get install openjdk-18-jdk -y
       - run: 
           name: install
           command: mvn -B clean install
