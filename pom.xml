@@ -126,6 +126,12 @@
             <version>0.0.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>rabbitmq</artifactId>
+            <version>1.17.3</version>
+            <scope>test</scope>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.netflix.graphql.dgs/graphql-dgs -->
         <dependency>
             <groupId>com.netflix.graphql.dgs</groupId>
