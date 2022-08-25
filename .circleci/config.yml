@@ -38,6 +38,7 @@ jobs:
          root: /home/circleci/project/
          paths:
            - target/
+      - run: ls
       - run:
           name: create docker image
           command: docker build - < Dockerfile
