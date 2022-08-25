@@ -28,12 +28,11 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 20.10.14
-      - run:
-          name: build
-          command: mvn -B clean -DskipTests package
-      - run:
-          name: install package
-          command: mvn -B -DskipTests install
+      - run: ./mvnw -Dmaven.test.skip=true package
+      - persist_to_workspace:
+         root: ./
+         paths:
+           - target/
       - run:
           name: create docker image
           command: docker build - < Dockerfile
