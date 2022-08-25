@@ -1,7 +1,11 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine.
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-
+orbs:
+  docker: circleci/docker@1.5.0
+auth:
+  username: $DOCKERHUB_USERNAME
+  password: $DOCKERHUB_PASSWORD
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
@@ -31,11 +35,19 @@ jobs:
       - run:
           name: install package
           command: mvn -B -DskipTests package
-      - run:
-          name: create docker image
-          command: docker build -t "investment" .
-
-
+      # - run:
+      #     name: create docker image
+      #     command: docker build -t "investment" .
+  publishLatestToHub: 
+    docker:
+      - image: cimg/openjdk:18.0.2
+    environment:
+        IMAGE_NAME: panusdx/investment
+    steps: 
+      - checkout
+      - setup_remote_docker
+      - run: docker build -t $IMAGE_NAME .
+      - run: docker push $IMAGE_NAME:latest
   
 
 # Invoke jobs via workflows
@@ -45,6 +57,10 @@ workflows:
     # Inside the workflow, you define the jobs you want to run.
     jobs: 
       - build-and-create-docker-image
+      - publishLatestToHub:
+          requires:
+            - build-and-create-docker-image
+
       - test:
           requires:
             - build-and-create-docker-image
