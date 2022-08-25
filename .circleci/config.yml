@@ -37,7 +37,7 @@ jobs:
           name: install package
           command: mvn -B -DskipTests package
       - run: docker build -t $IMAGE_NAME .
-      - run: docker login -u panusdx — password-stdin
+      - run: docker login --username=panusdx --email=pawelczapran@gmail.com
       - run: docker push $IMAGE_NAME:latest
   
   
