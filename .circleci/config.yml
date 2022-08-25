@@ -37,6 +37,7 @@ jobs:
           name: install package
           command: mvn -B -DskipTests package
       - run: docker build -t $IMAGE_NAME .
+      - run: docker login
       - run: docker push $IMAGE_NAME:latest
   
   
