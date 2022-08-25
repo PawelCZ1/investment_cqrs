@@ -35,7 +35,7 @@ jobs:
           command: ./mvnw -B -DskipTests package
       - run:
           name: create docker image
-          command: docker build -t "investment"
+          command: docker build -t "investment" .
 
 
   
