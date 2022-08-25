@@ -3,8 +3,8 @@
 version: 2.1
 
 auth:
-  username: $DOCKERHUB_USERNAME
-  password: $DOCKERHUB_PASSWORD
+  username: $DOCKER_USERNAME
+  password: $DOCKER_PASSWORD
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
@@ -37,7 +37,7 @@ jobs:
           name: install package
           command: mvn -B -DskipTests package
       - run: docker build -t $IMAGE_NAME .
-      - run: docker login --username=panusdx --password=guest2001
+      - run: docker login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD
       - run: docker push $IMAGE_NAME:latest
   
   
