@@ -20,7 +20,7 @@ jobs:
       # Use mvn clean and package as the standard maven build phase
       - run:
           name: test
-          command: mvn -B clean test
+          command: mvn -B test
   build-and-create-docker-image:
     docker:
       - image: cimg/openjdk:18.0.2
