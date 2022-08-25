@@ -23,7 +23,7 @@ jobs:
           name: test
           command: mvn -B test
   build-and-create-docker-image:
-    machine: true
+    executor: win/default
     steps:
       - checkout
       - run:
@@ -32,13 +32,6 @@ jobs:
       - run:
           name: install package
           command: mvn -B -DskipTests package
-      - persist_to_workspace:
-         root: /home/circleci/project/
-         paths:
-           - target/
-      - run: ls
-      - run: cd /home/circleci/project/target
-      - run: ls
       - run:
           name: create docker image
           command: docker build - < Dockerfile
