@@ -25,6 +25,8 @@ jobs:
           command: mvn -B test
   build-and-create-docker-image:
     machine: true
+    environment:
+      IMAGE_NAME: panusdx/investment
     steps:
       - checkout
       - run: ls
