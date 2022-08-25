@@ -12,7 +12,7 @@ jobs:
     # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # Be sure to update the Docker image tag below to openjdk version of your application.
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/openjdk
-    executor: win/default # executor type
+    executor: win/server-2022 # executor type
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
@@ -23,7 +23,7 @@ jobs:
           name: test
           command: mvn -B test
   build-and-create-docker-image:
-    executor: win/default
+    executor: win/server-2022
     steps:
       - checkout
       - run:
