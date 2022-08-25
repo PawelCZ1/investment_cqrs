@@ -26,15 +26,16 @@ jobs:
     executor: win/server-2022
     steps:
       - checkout
-      - run:
-          name: build
-          command: mvn -B clean -DskipTests package
-      - run:
-          name: install package
-          command: mvn -B -DskipTests package
-      - run:
-          name: create docker image
-          command: docker build - < Dockerfile
+      - run: ls
+      # - run:
+      #     name: build
+      #     command: mvn -B clean -DskipTests package
+      # - run:
+      #     name: install package
+      #     command: mvn -B -DskipTests package
+      # - run:
+      #     name: create docker image
+      #     command: docker build - < Dockerfile
 
 
   
