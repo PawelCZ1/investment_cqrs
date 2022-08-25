@@ -35,7 +35,7 @@ jobs:
           name: install package
           command: mvn -B -DskipTests package
       - persist_to_workspace:
-         root: ./
+         root: /home/circleci/project/
          paths:
            - target/
       - run:
