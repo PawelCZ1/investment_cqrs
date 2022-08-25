@@ -26,18 +26,20 @@ jobs:
       IMAGE_NAME: panusdx/investment
     steps:
       - checkout
-      - run: ls
-      - run:
-          name: build
-          command: mvn -B clean -DskipTests package
       - run:
           name: install package
           command: mvn -B -DskipTests package
       - run: docker build -t $IMAGE_NAME .
       - run: docker login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD
       - run: docker push $IMAGE_NAME:latest
-  
-  
+  compile:
+    machine: true  
+    steps:
+      - checkout
+        # Use mvn clean and package as the standard maven build phase
+      - run:
+          name: compile
+          command: mvn clean -B compile
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -45,12 +47,14 @@ workflows:
   sample: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs: 
-      - build-and-create-docker-image:
-          context: auth
-       
+      - compile
       - test:
           requires:
-            - build-and-create-docker-image
+            - compile
+      - build-and-create-docker-image:
+          requires:
+            - test
+          context: auth
     
 
 
