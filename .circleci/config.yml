@@ -39,7 +39,7 @@ jobs:
          paths:
            - target/
       - run: ls
-      - run: cd /target
+      - run: cd /home/circleci/project/target
       - run: ls
       - run:
           name: create docker image
