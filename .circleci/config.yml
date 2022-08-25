@@ -28,7 +28,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 20.10.14
-      - run: ./mvnw -Dmaven.test.skip=true package
+      - run: mvnw -Dmaven.test.skip=true package
       - persist_to_workspace:
          root: ./
          paths:
