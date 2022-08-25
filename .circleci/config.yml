@@ -28,7 +28,12 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 20.10.14
-      - run: ./mvnw -Dmaven.test.skip=true package
+      - run:
+          name: build
+          command: mvn -B clean -DskipTests package
+      - run:
+          name: install package
+          command: mvn -B -DskipTests package
       - persist_to_workspace:
          root: ./
          paths:
@@ -46,6 +51,9 @@ workflows:
   sample: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - test
-      - build-and-create-docker-image
+      - test   
+      - build-and-create-docker-image:
+          requires:
+            - test
+
 
