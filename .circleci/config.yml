@@ -22,12 +22,9 @@ jobs:
           name: test
           command: mvn -B test
   build-and-create-docker-image:
-    docker:
-      - image: cimg/openjdk:18.0.2
+    machine: true
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.14
       - run:
           name: build
           command: mvn -B clean -DskipTests package
