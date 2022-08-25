@@ -28,7 +28,12 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 20.10.14
-      - run: mvnw -Dmaven.test.skip=true package
+      - run:
+          name: build
+          command: mvn -B clean -DskipTests package
+      - run:
+          name: install package
+          command: mvn -B -DskipTests package
       - persist_to_workspace:
          root: ./
          paths:
