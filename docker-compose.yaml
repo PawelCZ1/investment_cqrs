@@ -11,27 +11,19 @@ services:
     expose:
       - 2001
 
-
-
-
-
-
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: 'rabbit'
+  axon:
+    image: axoniq/axonserver
     ports:
-      - "5672:5672"
-      - "15672:15672"
-    expose:
-      - 5672
-
+      - '8024:8024'
+      - '8124:8124'
+      - '8224:8224'
+    container_name: 'axon_server'
 
 
   application:
     depends_on:
       - database
-      - rabbitmq
+      - axon
     image: panusdx/investment
     ports:
       - "1973:1973"
@@ -40,12 +32,7 @@ services:
       - 1973
     environment:
       spring.datasource.url: jdbc:postgresql://host.docker.internal:2001/default_database
-      spring.rabbitmq.host: host.docker.internal
-
-
-networks:
-  rabbitmq_go_net:
-    driver: bridge
+      axoniq.axonserver.hostname: host.docker.internal
 
 
 
