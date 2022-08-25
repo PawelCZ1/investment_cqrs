@@ -33,7 +33,7 @@ jobs:
           command: mvn -B clean -DskipTests package
       - run:
           name: create docker image
-          command: docker build Dockerfile
+          command: docker build - < Dockerfile
 
 
   
