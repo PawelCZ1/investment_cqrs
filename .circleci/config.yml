@@ -21,21 +21,21 @@ jobs:
       # Use mvn clean and package as the standard maven build phase
       - run:
           name: test
-          command: mvn -B test
+          command: ./mvnw -B test
   build-and-create-docker-image:
     executor: win/server-2022
     steps:
       - checkout
       - run: ls
-      # - run:
-      #     name: build
-      #     command: mvn -B clean -DskipTests package
-      # - run:
-      #     name: install package
-      #     command: mvn -B -DskipTests package
-      # - run:
-      #     name: create docker image
-      #     command: docker build - < Dockerfile
+      - run:
+          name: build
+          command: ./mvnw -B clean -DskipTests package
+      - run:
+          name: install package
+          command: ./mvnw -B -DskipTests package
+      - run:
+          name: create docker image
+          command: docker build - < Dockerfile
 
 
   
