@@ -34,17 +34,9 @@ jobs:
       - run:
           name: install package
           command: mvn -B -DskipTests package
-      # - run:
-      #     name: create docker image
-      #     command: docker build -t "investment" .
-  publishLatestToHub: 
-    machine: true
-    environment:
-        IMAGE_NAME: panusdx/investment
-    steps: 
-      - checkout
       - run: docker build -t $IMAGE_NAME .
       - run: docker push $IMAGE_NAME:latest
+  
   
 
 # Invoke jobs via workflows
@@ -54,10 +46,6 @@ workflows:
     # Inside the workflow, you define the jobs you want to run.
     jobs: 
       - build-and-create-docker-image
-      - publishLatestToHub:
-          requires:
-            - build-and-create-docker-image
-
       - test:
           requires:
             - build-and-create-docker-image
