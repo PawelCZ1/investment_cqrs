@@ -2,9 +2,6 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
-auth:
-  username: $DOCKER_USERNAME
-  password: $DOCKER_PASSWORD
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
@@ -49,6 +46,7 @@ workflows:
     # Inside the workflow, you define the jobs you want to run.
     jobs: 
       - build-and-create-docker-image
+       
       - test:
           requires:
             - build-and-create-docker-image
