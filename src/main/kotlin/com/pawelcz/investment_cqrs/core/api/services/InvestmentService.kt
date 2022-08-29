@@ -7,11 +7,9 @@ import com.pawelcz.investment_cqrs.command.api.value_objects.Money
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AmountRange
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AvailableCapitalizationPeriods
 import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
-import com.pawelcz.investment_cqrs.core.api.dto.GetAllInvestmentsDTO
-import com.pawelcz.investment_cqrs.core.api.dto.GetAllRegisteredInvestmentsDTO
 import com.pawelcz.investment_cqrs.core.api.util.MapConverter
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllInvestmentsQuery
-import com.pawelcz.investment_cqrs.query.api.queries.GetAllRegisteredInvestmentsQuery
+import com.pawelcz.investment_cqrs.query.api.query_wrappers.InvestmentList
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.messaging.responsetypes.ResponseTypes
 import org.axonframework.queryhandling.QueryGateway
@@ -42,10 +40,10 @@ class InvestmentService(
         return commandGateway.sendAndWait(deactivateInvestmentCommand)
     }
 
-    fun getAllInvestments(): List<GetAllInvestmentsDTO>{
+    fun getAllInvestments(): InvestmentList{
         val getAllInvestmentsQuery = GetAllInvestmentsQuery()
             return queryGateway.query(getAllInvestmentsQuery,
-                ResponseTypes.multipleInstancesOf(GetAllInvestmentsDTO::class.java)).join()
+                ResponseTypes.instanceOf(InvestmentList::class.java)).join()
     }
 
 }

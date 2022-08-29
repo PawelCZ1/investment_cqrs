@@ -1,10 +1,11 @@
 package com.pawelcz.investment_cqrs.query.api.projections
 
-import com.pawelcz.investment_cqrs.core.api.dto.CreateInvestmentDTO
 import com.pawelcz.investment_cqrs.core.api.dto.GetAllInvestmentsDTO
 import com.pawelcz.investment_cqrs.core.api.dto.GetAllRegisteredInvestmentsDTO
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllInvestmentsQuery
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllRegisteredInvestmentsQuery
+import com.pawelcz.investment_cqrs.query.api.query_wrappers.InvestmentList
+import com.pawelcz.investment_cqrs.query.api.query_wrappers.RegisteredInvestmentList
 import com.pawelcz.investment_cqrs.query.api.repositories.InvestmentEntityRepository
 import com.pawelcz.investment_cqrs.query.api.repositories.RegisteredInvestmentEntityRepository
 import org.axonframework.queryhandling.QueryHandler
@@ -17,7 +18,7 @@ class InvestmentProjection(
 ) {
 
     @QueryHandler
-    fun handle(getAllInvestmentsQuery: GetAllInvestmentsQuery): List<GetAllInvestmentsDTO>{
+    fun handle(getAllInvestmentsQuery: GetAllInvestmentsQuery): InvestmentList{
         val investmentEntities = investmentEntityRepository.findAll()
         val investments = arrayListOf<GetAllInvestmentsDTO>()
         for(investmentEntity in investmentEntities)
@@ -31,11 +32,11 @@ class InvestmentProjection(
                     investmentEntity.status.toString()
                 )
             )
-        return investments
+        return InvestmentList(investments)
         }
 
     @QueryHandler
-    fun handle(getAllRegisteredInvestmentsQuery: GetAllRegisteredInvestmentsQuery): List<GetAllRegisteredInvestmentsDTO>{
+    fun handle(getAllRegisteredInvestmentsQuery: GetAllRegisteredInvestmentsQuery): RegisteredInvestmentList{
         val registeredInvestmentEntities = registeredInvestmentEntityRepository.findAll()
         val registeredInvestments = arrayListOf<GetAllRegisteredInvestmentsDTO>()
         for(registeredInvestmentEntity in registeredInvestmentEntities)
@@ -54,7 +55,7 @@ class InvestmentProjection(
                     registeredInvestmentEntity.wallet.walletId
                 )
             )
-        return registeredInvestments
+        return RegisteredInvestmentList(registeredInvestments)
     }
 
 

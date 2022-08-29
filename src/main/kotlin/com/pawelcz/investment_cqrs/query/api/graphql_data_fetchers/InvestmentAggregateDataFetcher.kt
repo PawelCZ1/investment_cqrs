@@ -13,5 +13,5 @@ class InvestmentAggregateDataFetcher {
     private lateinit var investmentService: InvestmentService
 
     @DgsQuery
-    fun investments(): Iterable<GetAllInvestmentsDTO> = investmentService.getAllInvestments()
+    fun investments(): Iterable<GetAllInvestmentsDTO> = investmentService.getAllInvestments().investments
 }

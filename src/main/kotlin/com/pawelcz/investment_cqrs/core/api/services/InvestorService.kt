@@ -8,6 +8,9 @@ import com.pawelcz.investment_cqrs.core.api.dto.*
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllInvestorsQuery
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllRegisteredInvestmentsQuery
 import com.pawelcz.investment_cqrs.query.api.queries.GetAllWalletsQuery
+import com.pawelcz.investment_cqrs.query.api.query_wrappers.InvestorList
+import com.pawelcz.investment_cqrs.query.api.query_wrappers.RegisteredInvestmentList
+import com.pawelcz.investment_cqrs.query.api.query_wrappers.WalletList
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.messaging.responsetypes.ResponseTypes
 import org.axonframework.queryhandling.QueryGateway
@@ -34,10 +37,10 @@ class InvestorService(
         return commandGateway.sendAndWait(registerInvestorCommand)
     }
 
-    fun getAllInvestors(): List<GetAllInvestorsDTO>{
+    fun getAllInvestors(): InvestorList{
         val getAllInvestorsQuery = GetAllInvestorsQuery()
         return queryGateway.query(getAllInvestorsQuery,
-            ResponseTypes.multipleInstancesOf(GetAllInvestorsDTO::class.java)).join()
+            ResponseTypes.instanceOf(InvestorList::class.java)).join()
     }
 
     fun createWallet(createWalletDTO: CreateWalletDTO): String? {
@@ -49,10 +52,10 @@ class InvestorService(
         return commandGateway.sendAndWait(createWalletCommand)
     }
 
-    fun getAllWallets(): List<GetAllWalletsDTO>{
+    fun getAllWallets(): WalletList{
         val getAllWalletsQuery = GetAllWalletsQuery()
         return queryGateway.query(getAllWalletsQuery,
-            ResponseTypes.multipleInstancesOf(GetAllWalletsDTO::class.java)).join()
+            ResponseTypes.instanceOf(WalletList::class.java)).join()
     }
 
     fun registerInvestment(registerInvestmentDTO: RegisterInvestmentDTO): String?{
@@ -69,9 +72,9 @@ class InvestorService(
         return commandGateway.sendAndWait(registerInvestmentCommand)
     }
 
-    fun getAllRegisteredInvestments(): List<GetAllRegisteredInvestmentsDTO>{
+    fun getAllRegisteredInvestments(): RegisteredInvestmentList{
         val getAllRegisteredInvestmentsQuery = GetAllRegisteredInvestmentsQuery()
         return queryGateway.query(getAllRegisteredInvestmentsQuery,
-            ResponseTypes.multipleInstancesOf(GetAllRegisteredInvestmentsDTO::class.java)).join()
+            ResponseTypes.instanceOf(RegisteredInvestmentList::class.java)).join()
     }
 }
