@@ -343,7 +343,7 @@ class AxonServerRESTInvestorIntegrationTest {
             )
             investorService.createWallet(wallet)
             sleep(1000)
-            val walletId = investorService.getAllWallets()[0].walletId
+            val walletId = investorService.getAllWallets().wallets[0].walletId
             val investment = CreateInvestmentDTO(
                 Currency.EURO,
                 100.0,
@@ -398,7 +398,7 @@ class AxonServerRESTInvestorIntegrationTest {
             )
             investorService.createWallet(wallet)
             sleep(1000)
-            val walletId = investorService.getAllWallets()[0].walletId
+            val walletId = investorService.getAllWallets().wallets[0].walletId
             val investment = CreateInvestmentDTO(
                 Currency.EURO,
                 100.0,
@@ -455,7 +455,7 @@ class AxonServerRESTInvestorIntegrationTest {
             )
             investorService.createWallet(wallet)
             sleep(1000)
-            val walletId = investorService.getAllWallets()[0].walletId
+            val walletId = investorService.getAllWallets().wallets[0].walletId
             val investment = CreateInvestmentDTO(
                 Currency.EURO,
                 100.0,
@@ -519,7 +519,7 @@ class AxonServerRESTInvestorIntegrationTest {
             )
             investorService.createWallet(wallet)
             sleep(1000)
-            val walletId = investorService.getAllWallets()[0].walletId
+            val walletId = investorService.getAllWallets().wallets[0].walletId
             val investment = CreateInvestmentDTO(
                 Currency.EURO,
                 100.0,
@@ -585,10 +585,10 @@ class AxonServerRESTInvestorIntegrationTest {
         @Test
         fun `investment repository size after event sourcing test`(){
             sleep(1000)
-            assertThat(investmentService.getAllInvestments().size).isEqualTo(4)
-            assertThat(investorService.getAllInvestors().size).isEqualTo(9)
-            assertThat(investorService.getAllWallets().size).isEqualTo(7)
-            assertThat(investorService.getAllRegisteredInvestments().size).isEqualTo(4)
+            assertThat(investmentService.getAllInvestments().investments.size).isEqualTo(4)
+            assertThat(investorService.getAllInvestors().investors.size).isEqualTo(9)
+            assertThat(investorService.getAllWallets().wallets.size).isEqualTo(7)
+            assertThat(investorService.getAllRegisteredInvestments().registeredInvestments.size).isEqualTo(4)
         }
     }
 }

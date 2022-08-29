@@ -162,8 +162,8 @@ class AxonServerRESTInvestmentIntegrationTest {
 
             investmentService.createInvestment(createInvestmentDTO)
             sleep(2000)
-            assertThat(investmentService.getAllInvestments().size).isEqualTo(1)
-            val investmentId = investmentService.getAllInvestments()[0].investmentId
+            assertThat(investmentService.getAllInvestments().investments.size).isEqualTo(1)
+            val investmentId = investmentService.getAllInvestments().investments[0].investmentId
             // when
             mockMvc.patch("/investments/$investmentId"){
                 contentType = MediaType.TEXT_PLAIN
@@ -190,8 +190,8 @@ class AxonServerRESTInvestmentIntegrationTest {
             )
             investmentService.createInvestment(createInvestmentDTO)
             sleep(2000)
-            assertThat(investmentService.getAllInvestments().size).isEqualTo(1)
-            val investmentId = investmentService.getAllInvestments()[0].investmentId
+            assertThat(investmentService.getAllInvestments().investments.size).isEqualTo(1)
+            val investmentId = investmentService.getAllInvestments().investments[0].investmentId
             investmentService.deactivateInvestment(investmentId)
             sleep(2000)
             // when
@@ -266,7 +266,7 @@ class AxonServerRESTInvestmentIntegrationTest {
         @Test
         fun `investment repository size after event sourcing test`(){
             sleep(1000)
-            assertThat(investmentService.getAllInvestments().size).isEqualTo(6)
+            assertThat(investmentService.getAllInvestments().investments.size).isEqualTo(6)
         }
     }
 
