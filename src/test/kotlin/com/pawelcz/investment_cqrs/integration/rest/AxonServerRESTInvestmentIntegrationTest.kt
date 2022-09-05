@@ -248,11 +248,11 @@ class AxonServerRESTInvestmentIntegrationTest {
                 .andExpect {
                     status { isOk() }
                     content { contentType(MediaType.APPLICATION_JSON) }
-                    jsonPath("$.size()") {value(3)}
-                    jsonPath("$[0]"){content { contentType(MediaType.APPLICATION_JSON)}}
-                    jsonPath("$[0].currency") {value("EURO")}
-                    jsonPath("$[1].currency") {value("USD")}
-                    jsonPath("$[2].currency") {value("PLN")}
+                    jsonPath("$.investments.size()") {value(3)}
+                    jsonPath("$.investments[0]"){content { contentType(MediaType.APPLICATION_JSON)}}
+                    jsonPath("$.investments[0].currency") {value("EURO")}
+                    jsonPath("$.investments[1].currency") {value("USD")}
+                    jsonPath("$.investments[2].currency") {value("PLN")}
                 }
         }
 

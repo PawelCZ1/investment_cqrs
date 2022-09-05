@@ -1,6 +1,5 @@
 package com.pawelcz.investment_cqrs.core.api.util
 
-import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.pow
 

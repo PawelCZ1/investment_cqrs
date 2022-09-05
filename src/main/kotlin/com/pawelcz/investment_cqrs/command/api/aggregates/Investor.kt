@@ -1,24 +1,17 @@
 package com.pawelcz.investment_cqrs.command.api.aggregates
 
-import com.pawelcz.investment_cqrs.command.api.aggregate_readers.InvestmentReader
 import com.pawelcz.investment_cqrs.command.api.commands.CreateWalletCommand
-import com.pawelcz.investment_cqrs.command.api.commands.RegisterInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.commands.RegisterInvestorCommand
-import com.pawelcz.investment_cqrs.command.api.entities.investor_entities.RegisteredInvestment
 import com.pawelcz.investment_cqrs.command.api.entities.investor_entities.Wallet
 import com.pawelcz.investment_cqrs.command.api.events.*
-import com.pawelcz.investment_cqrs.command.api.value_objects.Money
-import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.InvestmentPeriod
 import com.pawelcz.investment_cqrs.command.api.value_objects.investor_value_objects.PersonalData
-import com.pawelcz.investment_cqrs.core.api.util.ProfitCalculator
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateIdentifier
 import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.modelling.command.AggregateMember
 import org.axonframework.spring.stereotype.Aggregate
-import org.springframework.beans.factory.annotation.Autowired
-import java.time.LocalDate
+
 
 @Aggregate
 class Investor {

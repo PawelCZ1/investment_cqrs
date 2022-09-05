@@ -193,9 +193,9 @@ class AxonServerRESTInvestorIntegrationTest {
                 .andExpect {
                     status { isOk() }
                     content { contentType(MediaType.APPLICATION_JSON) }
-                    jsonPath("$.size()") {value(2)}
-                    jsonPath("$[0].name") {value("a")}
-                    jsonPath("$[1].name") {value("b")}
+                    jsonPath("$.investors.size()") {value(2)}
+                    jsonPath("$.investors.[0].name") {value("a")}
+                    jsonPath("$.investors[1].name") {value("b")}
                 }
         }
     }
@@ -306,9 +306,9 @@ class AxonServerRESTInvestorIntegrationTest {
                 .andExpect {
                     status { isOk() }
                     content { contentType(MediaType.APPLICATION_JSON) }
-                    jsonPath("$.size()") { value(2) }
-                    jsonPath("$[0].name") { value("first") }
-                    jsonPath("$[1].name") { value("second") }
+                    jsonPath("$.wallets.size()") { value(2) }
+                    jsonPath("$.wallets[0].name") { value("first") }
+                    jsonPath("$.wallets[1].name") { value("second") }
                 }
         }
 
@@ -569,10 +569,10 @@ class AxonServerRESTInvestorIntegrationTest {
                 .andExpect {
                     status { isOk() }
                     content { contentType(MediaType.APPLICATION_JSON) }
-                    jsonPath("$.size()") {value(3)}
-                    jsonPath("$[0].profit") {value(151)}
-                    jsonPath("$[1].profit") {value(181)}
-                    jsonPath("$[2].profit") {value(212)}
+                    jsonPath("$.registeredInvestments.size()") {value(3)}
+                    jsonPath("$.registeredInvestments[0].profit") {value(151)}
+                    jsonPath("$.registeredInvestments[1].profit") {value(181)}
+                    jsonPath("$.registeredInvestments[2].profit") {value(212)}
                 }
         }
     }

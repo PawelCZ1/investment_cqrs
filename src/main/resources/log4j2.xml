@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Extra logging related to initialization of Log4j.
- Set to debug or trace if log4j initialization is failing. -->
-<Configuration status="warn">
-    <Appenders>
-        <!-- Console appender configuration -->
-        <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout
-                    pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
-        </Console>
-    </Appenders>
-    <Loggers>
-        <!-- Root logger referring to console appender -->
-        <Root level="info" additivity="false">
-            <AppenderRef ref="console" />
-        </Root>
-    </Loggers>
-</Configuration>
+<!--&lt;!&ndash; Extra logging related to initialization of Log4j.-->
+<!-- Set to debug or trace if log4j initialization is failing. &ndash;&gt;-->
+<!--<Configuration status="warn">-->
+<!--    <Appenders>-->
+<!--        &lt;!&ndash; Console appender configuration &ndash;&gt;-->
+<!--        <Console name="console" target="SYSTEM_OUT">-->
+<!--            <PatternLayout-->
+<!--                    pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />-->
+<!--        </Console>-->
+<!--    </Appenders>-->
+<!--    <Loggers>-->
+<!--        &lt;!&ndash; Root logger referring to console appender &ndash;&gt;-->
+<!--        <Root level="info" additivity="false">-->
+<!--            <AppenderRef ref="console" />-->
+<!--        </Root>-->
+<!--    </Loggers>-->
+<!--</Configuration>-->

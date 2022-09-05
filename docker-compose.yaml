@@ -13,6 +13,11 @@ services:
 
   axon:
     image: axoniq/axonserver
+    environment:
+      - SPRING_SERVLET_MULTIPART_MAX-FILE-SIZE=20MB
+      - SPRING_SERVLET_MULTIPART_MAX-REQUEST-SIZE=20MB
+      - AXONIQ_AXONSERVER_DEVMODE_ENABLED=TRUE
+
     ports:
       - '8024:8024'
       - '8124:8124'
@@ -33,6 +38,7 @@ services:
     environment:
       spring.datasource.url: jdbc:postgresql://host.docker.internal:2001/default_database
       axoniq.axonserver.hostname: host.docker.internal
-
+      logging.file: messaging.log
+      logging.path: /var/log
 
 

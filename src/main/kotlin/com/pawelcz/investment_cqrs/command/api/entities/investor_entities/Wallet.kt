@@ -4,7 +4,6 @@ import com.pawelcz.investment_cqrs.command.api.aggregate_readers.InvestmentReade
 import com.pawelcz.investment_cqrs.command.api.commands.RegisterInvestmentCommand
 import com.pawelcz.investment_cqrs.command.api.events.InvestmentRegisteredEvent
 import com.pawelcz.investment_cqrs.command.api.value_objects.Money
-import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.AmountRange
 import com.pawelcz.investment_cqrs.command.api.value_objects.investment_value_objects.InvestmentPeriod
 import com.pawelcz.investment_cqrs.core.api.exceptions.WrongArgumentException
 import com.pawelcz.investment_cqrs.core.api.util.ProfitCalculator
@@ -13,7 +12,6 @@ import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.modelling.command.AggregateMember
 import org.axonframework.modelling.command.EntityId
-import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 
 
